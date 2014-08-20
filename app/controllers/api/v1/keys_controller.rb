@@ -19,7 +19,14 @@ class Api::V1::KeysController < ApiController
   end
   
   def destroy
+    @key = Key.find_by(key: params[:key])
     
+    if @key
+      @key.destroy
+      head :no_content
+    else
+      head :bad_request
+    end
   end
   
   # TODO serializer
@@ -41,7 +48,7 @@ class Api::V1::KeysController < ApiController
       
       # Figure out what to render
       # render status: 200,
-#              json:
+      #        json:
     else
       # Convenient 423 status
       render status: :locked,

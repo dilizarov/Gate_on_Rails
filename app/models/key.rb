@@ -1,5 +1,4 @@
 class Key < ActiveRecord::Base
-  include Externalable
   
   EXPIRATION_MARK = 3.days.ago
   

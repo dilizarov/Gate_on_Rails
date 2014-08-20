@@ -1,5 +1,6 @@
 class Api::V1::NetworksController < ApiController
 
+  # TODO serializer
   def index
     @networks = current_user.networks
     
@@ -10,6 +11,7 @@ class Api::V1::NetworksController < ApiController
                    total: @networks.length }
   end
   
+  # TODO serializer
   def create
     @network = Network.new(network_params)
     @network.creator_id = current_user.id

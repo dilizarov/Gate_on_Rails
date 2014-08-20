@@ -1,10 +1,10 @@
 class Api::V1::KeysController < ApiController
   
+  # TODO serializer
   def create
     @key.new(key_params)
     @key.gatekeeper_id = current_user.id
     @key.generate_key!
-    @key.generate_external_id!
     
     if @key.save
       render status: 200,
@@ -18,6 +18,11 @@ class Api::V1::KeysController < ApiController
     end
   end
   
+  def destroy
+    
+  end
+  
+  # TODO serializer
   def index
     @keys = current_user.keys.active
     
@@ -27,6 +32,7 @@ class Api::V1::KeysController < ApiController
                    info: "Keys" }
   end
   
+  # TODO figure out the success render + serializer
   def process
     @key = Key.find_by(key: params[:key])
     

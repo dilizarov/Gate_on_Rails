@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140820060237) do
+ActiveRecord::Schema.define(version: 20140820225628) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,13 +20,11 @@ ActiveRecord::Schema.define(version: 20140820060237) do
     t.string   "encrypted_key",      null: false
     t.integer  "gatekeeper_id",      null: false
     t.text     "encrypted_networks", null: false
-    t.uuid     "external_id",        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "keys", ["encrypted_key"], name: "index_keys_on_encrypted_key", unique: true, using: :btree
-  add_index "keys", ["external_id"], name: "index_keys_on_external_id", unique: true, using: :btree
   add_index "keys", ["gatekeeper_id"], name: "index_keys_on_gatekeeper_id", using: :btree
 
   create_table "networks", force: true do |t|

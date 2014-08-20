@@ -1,6 +1,5 @@
 class Api::V1::KeysController < ApiController
   
-  #TODO integrate networks...
   def create
     @key.new(key_params)
     @key.gatekeeper_id = current_user.id

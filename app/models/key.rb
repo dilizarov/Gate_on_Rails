@@ -1,6 +1,11 @@
 class Key < ActiveRecord::Base
   include Externalable
-
+  
+  EXPIRATION_MARK = 3.days.ago
+  
+  scope :expired, -> { where('updated_at < ?', EXPIRATION_MARK) }
+  scope :active,  -> { where('updated_at >= ?', EXPIRATION_MARK) }
+  
   # This is not confusing at all. :)
   attr_encryptor :key,      key: ENV['KEY_KEY']
   attr_encryptor :networks, key: ENV['NETWORKS_KEY'], marshal: true
@@ -12,8 +17,25 @@ class Key < ActiveRecord::Base
                             
   belongs_to :gatekeeper,
              class_name: "User",
-             foreign_id: :gatekeeper_id
-             
+             foreign_id: :gatekeeper_id             
+  
+  def expired?
+    self.updated_at < EXPIRATION_MARK
+  end
+  
+  def active?
+    !expired?
+  end
+  
+  def generate_key!
+    # key is a random 16 digit number
+    loop do
+      key = rand(1_000_000_000_000_000...10_000_000_000_000_000)
+      break self.key = key unless Key.find_by(key: key)
+    end
+  end
+  
+  #TODO: Figure out what to return to show current_user.
   def process(current_user)
     
     user_networks = self.networks.map do |network_id| 
@@ -33,14 +55,6 @@ class Key < ActiveRecord::Base
     
     key.touch
 
-  end                          
-  
-  def generate_key!
-    # key is a random 16 digit number
-    loop do
-      key = rand(1_000_000_000_000_000...10_000_000_000_000_000)
-      break self.key = key unless Key.find_by(key: key)
-    end
-  end
+  end             
   
 end

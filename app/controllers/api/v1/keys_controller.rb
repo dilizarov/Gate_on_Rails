@@ -20,7 +20,7 @@ class Api::V1::KeysController < ApiController
   end
   
   def index
-    @keys = current_user.keys
+    @keys = current_user.keys.active
     
     render status: 200,
            json: @keys,
@@ -31,8 +31,12 @@ class Api::V1::KeysController < ApiController
   def process
     @key = Key.find_by(key: params[:key])
     
-    if @key
+    if @key && @key.active?
       @key.process(current_user)
+      
+      # Figure out what to render
+      # render status: 200,
+#              json:
     else
       # Convenient 423 status
       render status: :locked,

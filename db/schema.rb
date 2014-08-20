@@ -11,10 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140820012016) do
+ActiveRecord::Schema.define(version: 20140820060237) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "keys", force: true do |t|
+    t.string   "encrypted_key",      null: false
+    t.integer  "gatekeeper_id",      null: false
+    t.text     "encrypted_networks", null: false
+    t.uuid     "external_id",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "keys", ["encrypted_key"], name: "index_keys_on_encrypted_key", unique: true, using: :btree
+  add_index "keys", ["external_id"], name: "index_keys_on_external_id", unique: true, using: :btree
+  add_index "keys", ["gatekeeper_id"], name: "index_keys_on_gatekeeper_id", using: :btree
 
   create_table "networks", force: true do |t|
     t.string   "name",        null: false
@@ -26,6 +39,19 @@ ActiveRecord::Schema.define(version: 20140820012016) do
 
   add_index "networks", ["creator_id"], name: "index_networks_on_creator_id", using: :btree
   add_index "networks", ["external_id"], name: "index_networks_on_external_id", unique: true, using: :btree
+
+  create_table "user_networks", force: true do |t|
+    t.integer  "user_id",                       null: false
+    t.integer  "network_id",                    null: false
+    t.integer  "gatekeeper_id"
+    t.boolean  "anonymous",     default: false, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "user_networks", ["gatekeeper_id"], name: "index_user_networks_on_gatekeeper_id", using: :btree
+  add_index "user_networks", ["network_id"], name: "index_user_networks_on_network_id", using: :btree
+  add_index "user_networks", ["user_id"], name: "index_user_networks_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false

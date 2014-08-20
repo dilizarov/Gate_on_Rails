@@ -8,9 +8,9 @@ class CreateKeys < ActiveRecord::Migration
 
       t.timestamps
     end
-  end
   
-  add_index :keys, :encrypted_key, unique: true
-  add_index :keys, :external_id,   unique: true
-  add_index :keys, :gatekeeper_id
+    add_index :keys, :encrypted_key, unique: true
+    add_index :keys, :external_id,   unique: true
+    add_index :keys, :gatekeeper_id
+  end
 end

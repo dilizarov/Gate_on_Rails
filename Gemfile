@@ -11,6 +11,9 @@ gem 'devise-token_authenticatable'
 # Serialize JSON output for nice APIs.
 gem 'active_model_serializers'
 
+# Easy bulk insert of data into DB
+gem 'activerecord-import'
+
 # Abstract away the fact that cetrain data in the DB is encrypted
 gem 'attr_encrypted'
 

@@ -17,6 +17,9 @@ class User < ActiveRecord::Base
   has_many :user_networks,
            class_name: "UserNetwork"
            
+  has_many :keys,
+           foreign_key: :gatekeeper_id
+           
   def skip_confirmation!
     self.confirmed_at = Time.now
   end

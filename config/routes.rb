@@ -8,6 +8,10 @@ Rails.application.routes.draw do
         post   'sessions'      => 'sessions#create',      as: 'login'
         delete 'sessions'      => 'sessions#destroy',     as: 'logout'
       end
+      
+      resources :networks
+      resources :keys
+      post '/keys/process', to: 'keys#process'
     end
   end
 end

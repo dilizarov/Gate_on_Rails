@@ -10,6 +10,31 @@ class Key < ActiveRecord::Base
   validates :key,           presence: true,
                             uniqueness: true
                             
+  belongs_to :gatekeeper,
+             class_name: "User",
+             foreign_id: :gatekeeper_id
+             
+  def process(current_user)
+    
+    user_networks = self.networks.map do |network_id| 
+                      UserNetwork.new(user_id:       current_user.id,
+                                      network_id:    network_id,
+                                      gatekeeper_id: self.gatekeeper_id)
+                    end
+    
+    # I don't imagine many, if any, keys that will have very large amounts of
+    # networks. Hence, the array isn't very large. Because of this, we don't
+    # need the efficiency (potentially 70x+ faster) of a raw INSERT INTO sql
+    # query. If we find the need or want to do so, we could go forth and do
+    # that. As it stands, I don't think we need it, and this import should
+    # suffice. - David
+    
+    UserNetwork.import(user_networks)
+    
+    key.touch
+
+  end                          
+  
   def generate_key!
     # key is a random 16 digit number
     loop do

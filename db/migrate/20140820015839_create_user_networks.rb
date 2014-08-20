@@ -4,7 +4,7 @@ class CreateUserNetworks < ActiveRecord::Migration
       t.integer :user_id,      null: false
       t.integer :network_id,   null: false
       t.integer :gatekeeper_id
-      t.boolean :anonymous,    null: false
+      t.boolean :anonymous,    null: false, default: false
 
       t.timestamps
     end

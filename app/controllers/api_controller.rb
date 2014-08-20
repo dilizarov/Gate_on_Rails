@@ -1,5 +1,6 @@
 class ApiController < ActionController::API
-  respond_to :json
-  
   include SessionHelper
+
+  respond_to :json
+  before_action :ensure_current_user!
 end

@@ -1,5 +1,4 @@
 class User < ActiveRecord::Base
-  # has external_id attribute
   include Externalable
   
   # Others available are:
@@ -12,6 +11,12 @@ class User < ActiveRecord::Base
   
   validates :name, presence: true
   
+  has_many :networks,
+           through: :user_networks
+  
+  has_many :user_networks,
+           class_name: "UserNetwork"
+           
   def skip_confirmation!
     self.confirmed_at = Time.now
   end

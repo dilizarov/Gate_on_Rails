@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  network_id: 1
+  gatekeeper_id: 1
+  anonymous: false
+
+two:
+  user_id: 1
+  network_id: 1
+  gatekeeper_id: 1
+  anonymous: false

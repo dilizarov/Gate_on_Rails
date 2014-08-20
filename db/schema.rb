@@ -11,10 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140819171812) do
+ActiveRecord::Schema.define(version: 20140820012016) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "networks", force: true do |t|
+    t.string   "name",        null: false
+    t.integer  "creator_id",  null: false
+    t.uuid     "external_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "networks", ["creator_id"], name: "index_networks_on_creator_id", using: :btree
+  add_index "networks", ["external_id"], name: "index_networks_on_external_id", unique: true, using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false

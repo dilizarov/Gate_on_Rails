@@ -2,10 +2,10 @@ class User < ActiveRecord::Base
   include Externalable
   
   # Others available are:
-  # :lockable, :timeoutable and :omniauthable
+  # :lockable, :timeoutable, :confirmable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :confirmable, :token_authenticatable
+         :token_authenticatable
          
   before_save :ensure_authentication_token
   
@@ -22,8 +22,4 @@ class User < ActiveRecord::Base
            
   has_many :posts
   has_many :comments
-  
-  def skip_confirmation!
-    self.confirmed_at = Time.now
-  end
 end

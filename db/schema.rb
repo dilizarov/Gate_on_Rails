@@ -19,14 +19,14 @@ ActiveRecord::Schema.define(version: 20140821153140) do
   create_table "comments", force: true do |t|
     t.uuid     "external_id", null: false
     t.integer  "user_id",     null: false
-    t.integer  "status_id",   null: false
+    t.integer  "post_id",     null: false
     t.text     "body",        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "comments", ["external_id"], name: "index_comments_on_external_id", unique: true, using: :btree
-  add_index "comments", ["status_id"], name: "index_comments_on_status_id", using: :btree
+  add_index "comments", ["post_id"], name: "index_comments_on_post_id", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "keys", force: true do |t|
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 20140821153140) do
   add_index "networks", ["creator_id"], name: "index_networks_on_creator_id", using: :btree
   add_index "networks", ["external_id"], name: "index_networks_on_external_id", unique: true, using: :btree
 
-  create_table "statuses", force: true do |t|
+  create_table "posts", force: true do |t|
     t.uuid     "external_id", null: false
     t.integer  "user_id",     null: false
     t.integer  "network_id",  null: false
@@ -60,9 +60,9 @@ ActiveRecord::Schema.define(version: 20140821153140) do
     t.datetime "updated_at"
   end
 
-  add_index "statuses", ["external_id"], name: "index_statuses_on_external_id", unique: true, using: :btree
-  add_index "statuses", ["network_id"], name: "index_statuses_on_network_id", using: :btree
-  add_index "statuses", ["user_id"], name: "index_statuses_on_user_id", using: :btree
+  add_index "posts", ["external_id"], name: "index_posts_on_external_id", unique: true, using: :btree
+  add_index "posts", ["network_id"], name: "index_posts_on_network_id", using: :btree
+  add_index "posts", ["user_id"], name: "index_posts_on_user_id", using: :btree
 
   create_table "user_networks", force: true do |t|
     t.integer  "user_id",                       null: false

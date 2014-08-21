@@ -20,6 +20,9 @@ gem 'attr_encrypted'
 # ENV variable store
 gem 'figaro'
 
+# in-memory datastore
+gem 'redis', '~> 3.1.0'
+
 # Will be used for rake-task scheduling when we shift off Heroku to our own
 # servers. For now, we use Heroku's add-on.
 # gem 'whenever', require: false

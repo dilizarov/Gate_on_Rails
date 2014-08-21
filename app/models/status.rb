@@ -1,4 +1,4 @@
-class Status < ActiveRecord::Base
+class Post < ActiveRecord::Base
   include Externalable
   
   validates :user_id,     presence: true

@@ -20,6 +20,10 @@ gem 'attr_encrypted'
 # ENV variable store
 gem 'figaro'
 
+# Will be used for rake-task scheduling when we shift off Heroku to our own
+# servers. For now, we use Heroku's add-on.
+# gem 'whenever', require: false
+
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 

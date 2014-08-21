@@ -8,9 +8,7 @@ class Api::V1::PostsController < ApplicationController
       @post = @network.posts.build(post_params)
       @post.user_id = current_user.id
       
-      if @post.save
-        
-        
+      if @post.save        
         render status: 200,
                json: @post
       else

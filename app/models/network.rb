@@ -1,6 +1,8 @@
 class Network < ActiveRecord::Base
   include Externalable
 
+  MAX_NO_OF_POSTS_ON_REDIS = 30
+  
   validates :name,       presence: true
   validates :creator_id, presence: true
   
@@ -15,4 +17,5 @@ class Network < ActiveRecord::Base
   belongs_to :creator, 
              class_name: "User",
              foreign_key: :creator_id
+             
 end

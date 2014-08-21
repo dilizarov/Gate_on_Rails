@@ -4,7 +4,6 @@ class Api::V1::KeysController < ApiController
   def create
     @key.new(key_params)
     @key.gatekeeper_id = current_user.id
-    @key.generate_key!
     
     if @key.save
       render status: 200,

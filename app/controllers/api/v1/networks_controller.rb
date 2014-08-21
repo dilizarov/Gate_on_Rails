@@ -15,7 +15,6 @@ class Api::V1::NetworksController < ApiController
   def create
     @network = Network.new(network_params)
     @network.creator_id = current_user.id
-    @network.generate_external_id!
     
     if @network.save
       UserNetwork.create(user_id: current_user.id, network_id: @network.id)

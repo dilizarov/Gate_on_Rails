@@ -2,7 +2,7 @@ module Externalable
   extend ActiveSupport::Concern
   
   included do
-    validates :external_id, presence: true
+    before_save :generate_external_id!
   end
   
   def generate_external_id!

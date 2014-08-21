@@ -12,6 +12,8 @@ Rails.application.routes.draw do
       resources :networks
       resources :keys
       post '/keys/process', to: 'keys#process'
+      resources :posts
+      resources :comments
     end
   end
 end

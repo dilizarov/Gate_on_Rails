@@ -22,4 +22,8 @@ class User < ActiveRecord::Base
            
   has_many :posts
   has_many :comments
+  
+  def in_network?(network)
+    !!UserNetwork.find_by(user_id: self.id, network_id: network.id)
+  end
 end

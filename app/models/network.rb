@@ -10,6 +10,8 @@ class Network < ActiveRecord::Base
   has_many :user_networks, 
            class_name: "UserNetworks"
   
+  has_many :statuses
+  
   belongs_to :creator, 
              class_name: "User",
              foreign_key: :creator_id

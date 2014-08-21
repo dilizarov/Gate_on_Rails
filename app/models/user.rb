@@ -20,6 +20,9 @@ class User < ActiveRecord::Base
   has_many :keys,
            foreign_key: :gatekeeper_id
            
+  has_many :statuses
+  has_many :comments
+  
   def skip_confirmation!
     self.confirmed_at = Time.now
   end

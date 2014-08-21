@@ -11,10 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140820225628) do
+ActiveRecord::Schema.define(version: 20140821153140) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "comments", force: true do |t|
+    t.uuid     "external_id", null: false
+    t.integer  "user_id",     null: false
+    t.integer  "status_id",   null: false
+    t.text     "body",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "comments", ["external_id"], name: "index_comments_on_external_id", unique: true, using: :btree
+  add_index "comments", ["status_id"], name: "index_comments_on_status_id", using: :btree
+  add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "keys", force: true do |t|
     t.string   "encrypted_key",      null: false
@@ -37,6 +50,19 @@ ActiveRecord::Schema.define(version: 20140820225628) do
 
   add_index "networks", ["creator_id"], name: "index_networks_on_creator_id", using: :btree
   add_index "networks", ["external_id"], name: "index_networks_on_external_id", unique: true, using: :btree
+
+  create_table "statuses", force: true do |t|
+    t.uuid     "external_id", null: false
+    t.integer  "user_id",     null: false
+    t.integer  "network_id",  null: false
+    t.text     "body",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "statuses", ["external_id"], name: "index_statuses_on_external_id", unique: true, using: :btree
+  add_index "statuses", ["network_id"], name: "index_statuses_on_network_id", using: :btree
+  add_index "statuses", ["user_id"], name: "index_statuses_on_user_id", using: :btree
 
   create_table "user_networks", force: true do |t|
     t.integer  "user_id",                       null: false

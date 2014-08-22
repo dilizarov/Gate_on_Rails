@@ -1,9 +1,9 @@
 class Api::V1::PostsController < ApplicationController
 
   def create
-    @network = Network.find_by(external_id: params[:external_id])
+    @network = Network.find_by(external_id: params[:network_external_id])
     
-    if current_user.in_network?(@network)
+    if @network && current_user.in_network?(@network)
       
       @post = @network.posts.build(post_params)
       @post.user_id = current_user.id
@@ -16,9 +16,18 @@ class Api::V1::PostsController < ApplicationController
                json: { errors: @post.errors.full_messages }
       end
     else
-      render status: :unauthorized,
-             json: { success: false,
-                     info: "Unauthorized to post in this network" }
+      head :bad_request
+    end
+  end
+  
+  def destroy
+    @post = Post.find_by(external_id: params[:network_external_id])
+    
+    if @post && current_user.owns_post?(@post)
+      @post.destroy
+      head :no_content
+    else
+      head :bad_request
     end
   end
   

@@ -26,4 +26,8 @@ class User < ActiveRecord::Base
   def in_network?(network)
     !!UserNetwork.find_by(user_id: self.id, network_id: network.id)
   end
+  
+  def owns_post?(post)
+    self.id == post.user_id
+  end
 end

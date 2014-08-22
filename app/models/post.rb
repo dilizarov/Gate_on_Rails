@@ -18,6 +18,6 @@ class Post < ActiveRecord::Base
     serialized_post = PostSerializer.new(self).to_json
     
     REDIS.lpush(network_key, serialized_post)
-    REDIS.ltrim(network_key, 0, MAX_NO_OF_POSTS_ON_REDIS - 1)
+    REDIS.ltrim(network_key, 0, ENV['MAX_POSTS_PER_REDIS_FEED'] - 1)
   end
 end

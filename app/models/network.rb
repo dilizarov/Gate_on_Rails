@@ -1,7 +1,5 @@
 class Network < ActiveRecord::Base
   include Externalable
-
-  MAX_NO_OF_POSTS_ON_REDIS = 30
   
   validates :name,       presence: true
   validates :creator_id, presence: true

@@ -1,4 +1,4 @@
-class Api::V1::PostsController < ApplicationController
+class Api::V1::PostsController < ApiController
 
   def create
     @network = Network.find_by(external_id: params[:network_external_id])

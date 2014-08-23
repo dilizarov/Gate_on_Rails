@@ -4,9 +4,12 @@ gem 'rails', '4.1.4'
 gem 'rails-api'
 gem 'pg'
 
-# Auth Solution
+# Authentication Solution
 gem 'devise'
 gem 'devise-token_authenticatable'
+
+# Authorization Solution
+gem 'cancan'
 
 # Serialize JSON output for nice APIs.
 gem 'active_model_serializers'

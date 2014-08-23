@@ -27,7 +27,19 @@ class User < ActiveRecord::Base
     !!UserNetwork.find_by(user_id: self.id, network_id: network.id)
   end
   
+  def in_networks?(networks)
+    network_ids = networks.map(&:id)
+    valid_networks = UserNetwork.where(user_id: self.id, 
+                                       network_id: network_ids)
+                                       
+    valid_networks.length == network_ids.length
+  end
+  
   def owns_post?(post)
     self.id == post.user_id
+  end
+  
+  def owns_comment?(comment)
+    self.id == comment.user_id
   end
 end

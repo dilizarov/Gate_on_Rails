@@ -16,7 +16,7 @@ class Key < ActiveRecord::Base
                               
   belongs_to :gatekeeper,
              class_name: "User",
-             foreign_id: :gatekeeper_id             
+             foreign_id: :gatekeeper_id          
   
   def expired?
     self.updated_at < EXPIRATION_MARK

@@ -21,7 +21,7 @@ class Api::V1::PostsController < ApplicationController
   end
   
   def destroy
-    @post = Post.find_by(external_id: params[:network_external_id])
+    @post = Post.find_by(external_id: params[:external_id])
     
     if @post && current_user.owns_post?(@post)
       @post.destroy

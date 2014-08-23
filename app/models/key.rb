@@ -34,15 +34,17 @@ class Key < ActiveRecord::Base
     end
   end
   
-  #TODO: Figure out what to return to show current_user.
   def process(current_user)
     
-    user_networks = self.networks.map do |network_id| 
+    # Filter out networks that current_user is already part of.
+    networks_to_be_added = self.networks - current_user.networks.map(&:id)
+    
+    user_networks = networks_to_be_added.map do |network_id| 
                       UserNetwork.new(user_id:       current_user.id,
                                       network_id:    network_id,
                                       gatekeeper_id: self.gatekeeper_id)
                     end
-    
+        
     # I don't imagine many, if any, keys that will have very large amounts of
     # networks. Hence, the array isn't very large. Because of this, we don't
     # need the efficiency (potentially 70x+ faster) of a raw INSERT INTO sql
@@ -53,7 +55,10 @@ class Key < ActiveRecord::Base
     UserNetwork.import(user_networks)
     
     key.touch
-
+    
+    new_networks = Network.where(id: networks_to_be_added).to_a
+    
+    return new_networks
   end             
   
 end

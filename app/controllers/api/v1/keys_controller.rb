@@ -38,16 +38,16 @@ class Api::V1::KeysController < ApiController
                    info: "Keys" }
   end
   
-  # TODO figure out the success render + serializer
   def process
     @key = Key.find_by(key: params[:key])
     
     if @key && @key.active?
-      @key.process(current_user)
+      @new_networks = @key.process(current_user)
       
-      # Figure out what to render
-      # render status: 200,
-      #        json:
+      render status: 200,
+             json: @new_networks, serializer: SimpleNetworkSerializer,
+             meta: { success: true,
+                     info: "Key processed." }
     else
       # Convenient 423 status
       render status: :locked,

@@ -6,17 +6,19 @@ class Key < ActiveRecord::Base
   scope :active,  -> { where('updated_at >= ?', EXPIRATION_MARK) }
   
   # This is not confusing at all. :)
-  attr_encryptor :key,      key: ENV['KEY_KEY']
-  attr_encryptor :networks, key: ENV['NETWORKS_KEY'], marshal: true
+  attr_encrypted :key,      key: ENV['KEY_KEY']
+  attr_encrypted :networks, key: ENV['NETWORKS_KEY'], marshal: true
 
   before_save :generate_key!
 
   validates :gatekeeper_id, presence: true
   validates :networks,      presence: true
                               
+  # key.networks is an array of network_ids. In truth, a key has_many networks, and a network has_many keys. I'd rather keep them decoupled for a sudo-security layer by not having those associations. An array of network_ids is enough info to go by for us.
+  
   belongs_to :gatekeeper,
              class_name: "User",
-             foreign_id: :gatekeeper_id          
+             foreign_key: :gatekeeper_id          
   
   def expired?
     self.updated_at < EXPIRATION_MARK
@@ -30,7 +32,7 @@ class Key < ActiveRecord::Base
     # key is a random 16 digit number
     loop do
       key = rand(1_000_000_000_000_000...10_000_000_000_000_000)
-      break self.key = key unless Key.find_by(key: key)
+      break self.key = key unless Key.find_by_key(key)
     end
   end
   

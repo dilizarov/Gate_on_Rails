@@ -42,6 +42,7 @@ class Key < ActiveRecord::Base
     networks_to_be_added = self.networks - current_user.networks.map(&:id)
     
     user_networks = networks_to_be_added.map do |network_id| 
+                      # Not an N + 1 query problem ;).
                       UserNetwork.new(user_id:       current_user.id,
                                       network_id:    network_id,
                                       gatekeeper_id: self.gatekeeper_id)

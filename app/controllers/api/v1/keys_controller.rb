@@ -1,8 +1,11 @@
 class Api::V1::KeysController < ApiController
   
-  # TODO serializer
   def create
-    @key.new(key_params)
+    # TODO: Check if I could just do 
+    # @key.new(key_params, gatekeeper_id: current_user.id)
+    # For some reason, I don't think I am able to.
+    
+    @key = Key.new(key_params)
     @key.gatekeeper_id = current_user.id
     
     if @key.save
@@ -18,7 +21,7 @@ class Api::V1::KeysController < ApiController
   end
   
   def destroy
-    @key = Key.find_by(key: params[:key])
+    @key = Key.find_by_key(params[:key])
     
     if @key
       @key.destroy
@@ -28,7 +31,6 @@ class Api::V1::KeysController < ApiController
     end
   end
   
-  # TODO serializer
   def index
     @keys = current_user.keys.active
     
@@ -38,8 +40,9 @@ class Api::V1::KeysController < ApiController
                    info: "Keys" }
   end
   
-  def process
-    @key = Key.find_by(key: params[:key])
+  # ActionController::Base has a method named process.
+  def prokess
+    @key = Key.find_by_key(params[:key])
     
     if @key && @key.active?
       @new_networks = @key.process(current_user)
@@ -59,7 +62,7 @@ class Api::V1::KeysController < ApiController
   private
   
   def key_params
-    params.require(:key).permit(:networks)
+    params.require(:key).permit(networks: [])
   end
   
 end

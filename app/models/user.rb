@@ -23,12 +23,16 @@ class User < ActiveRecord::Base
   has_many :posts
   has_many :comments
   
+  # Takes a Network object or network id.
   def in_network?(network)
-    !!UserNetwork.find_by(user_id: self.id, network_id: network.id)
+    network_id = Network === network ? network.id : network
+    !!UserNetwork.find_by(user_id: self.id, network_id: network_id)
   end
   
+  # Takes an array of Network objects or network ids.
+  # Implies based on type of first element.
   def in_networks?(networks)
-    network_ids = networks.map(&:id)
+    network_ids = Network === networks.first ? networks.map(&:id) : networks
     valid_networks = UserNetwork.where(user_id: self.id, 
                                        network_id: network_ids)
                                        

@@ -14,6 +14,8 @@ class Ability
       user.in_network?(post.network)
     end
     
+    can :create, Post, network: { user: }
+    
     can :create, Comment do |comment|
       user.in_network?(comment.post.network)
     end
@@ -23,9 +25,7 @@ class Ability
     end
     
     can :create, Key do |key|
-      networks = Network.where(id: key.networks).to_a
-        
-      user.in_networks?(networks)
+      user.in_networks?(key.networks)
     end
     
     can :destroy, Post do |post|

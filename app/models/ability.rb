@@ -10,6 +10,8 @@ class Ability
     # Must own comment to delete comment
     
     #SCHEME; TODO: Test. Ideally, they would look like this.
+    
+    #should be fine when made.
     can :show, Network do |network|
       user.in_network?(network)
     end
@@ -18,6 +20,7 @@ class Ability
       user.in_network?(post.network_id)
     end
     
+    #l&a
     can :destroy, Post do |post|
       user.owns_post?(post)
     end
@@ -26,6 +29,7 @@ class Ability
       user.in_network?(comment.post.network_id)
     end
     
+    #l&a
     can :destroy, Comment do |comment|
       user.owns_comment?(comment)
     end
@@ -34,6 +38,7 @@ class Ability
       user.in_networks?(key.networks)
     end
     
+    #l&a
     can :destroy, Key do |key|
       user.owns_key?(key)
     end   

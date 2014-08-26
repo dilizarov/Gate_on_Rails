@@ -1,4 +1,6 @@
 class Api::V1::PostsController < ApiController
+  load_resource find_by: :external_id
+  authorize_resource
 
   def create
     @network = Network.find_by(external_id: params[:network_external_id])
@@ -20,15 +22,16 @@ class Api::V1::PostsController < ApiController
     end
   end
   
+  # Should be ok
   def destroy
-    @post = Post.find_by(external_id: params[:external_id])
-    
-    if @post && current_user.owns_post?(@post)
+    # post = Post.find_by(external_id: params[:id])
+#
+#     if @post && current_user.owns_post?(@post)
       @post.destroy
       head :no_content
-    else
-      head :bad_request
-    end
+    # else
+#       head :bad_request
+#     end
   end
   
   private

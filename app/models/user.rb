@@ -49,4 +49,5 @@ class User < ActiveRecord::Base
   
   def owns_key?(key)
     self.id == key.gatekeeper_id
+  end
 end

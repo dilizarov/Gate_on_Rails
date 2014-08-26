@@ -20,8 +20,9 @@ class Api::V1::KeysController < ApiController
     end
   end
   
+  # Should be ok
   def destroy
-    @key = Key.find_by_key(params[:key])
+    @key = Key.find_by_key(params[:id])
     
     if @key
       @key.destroy
@@ -48,7 +49,8 @@ class Api::V1::KeysController < ApiController
       @new_networks = @key.process(current_user)
       
       render status: 200,
-             json: @new_networks, serializer: SimpleNetworkSerializer,
+             json: @new_networks, 
+             serializer: SimpleNetworkSerializer,
              meta: { success: true,
                      info: "Key processed." }
     else

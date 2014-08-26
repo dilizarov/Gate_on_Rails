@@ -46,4 +46,7 @@ class User < ActiveRecord::Base
   def owns_comment?(comment)
     self.id == comment.user_id
   end
+  
+  def owns_key?(key)
+    self.id == key.gatekeeper_id
 end

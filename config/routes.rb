@@ -9,11 +9,11 @@ Rails.application.routes.draw do
         delete 'sessions'      => 'sessions#destroy',     as: 'logout'
       end
       
-      resources :networks
-      resources :keys
+      resources :networks, only: [:create, :index, :show]
+      resources :posts,    only: [:create, :destroy]
+      resources :comments, only: [:create, :destroy]
+      resources :keys,     only: [:create, :destroy, :index]
       post '/keys/process', to: 'keys#prokess'
-      resources :posts
-      resources :comments
     end
   end
 end

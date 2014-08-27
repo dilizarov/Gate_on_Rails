@@ -14,8 +14,6 @@ class Api::V1::NetworksController < ApiController
   
   def create
     if @network.save
-      UserNetwork.create(user_id: current_user.id, network_id: @network.id)
-      
       render status: 200,
              json: @network,
              serializer: SimpleNetworkSerializer,
@@ -28,7 +26,9 @@ class Api::V1::NetworksController < ApiController
   end
   
   def show
-    
+    @network = @network.consolidate_feed_and_users
+    render status: 200,
+           json: @network
   end
 
   private

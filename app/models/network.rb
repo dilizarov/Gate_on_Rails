@@ -18,25 +18,30 @@ class Network < ActiveRecord::Base
              class_name: "User",
              foreign_key: :creator_id
              
-  def feed
-    post_ids = REDIS.hkeys(feed_network_key)
-    ordered_post_ids = post_ids.sort.reverse
-    serialized_posts = REDIS.hmget(feed_network_key, ordered_post_ids)
-    serialized_posts.map { |serialized_post| JSON.parse(serialized_post) }
-  end
-  
   def consolidate_feed_and_users
-    serialized_users = JSON.parse(ActiveModel::ArraySerializer.new(users, each_serializer: UserSerializer).to_json)
-    
+    # Serializing returns that Serializer object.
+    # To get actual data, you need to use #to_json.
+    # To get data back in ruby, must do JSON.parse.
     {
       network: {
         feed: feed,
-        users: serialized_users
+        users: JSON.parse(serialized_users(jsonified: true))
       }
     }
   end
   
-  private
+  def feed
+    post_ids         = REDIS.hkeys(feed_network_key)
+    ordered_post_ids = post_ids.sort.reverse
+    serialized_posts = REDIS.hmget(feed_network_key, ordered_post_ids)
+    
+    serialized_posts.map { |serialized_post| JSON.parse(serialized_post) }
+  end
+  
+  def serialized_users(options = {})
+    serialization = ActiveModel::ArraySerializer.new(users, each_serializer: UserSerializer)
+    options[:jsonified] ? serialization.to_json : serialization
+  end
   
   def add_creator_to_network!
     UserNetwork.create(user_id: self.creator_id, network_id: self.id)

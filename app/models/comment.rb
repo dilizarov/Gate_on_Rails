@@ -20,15 +20,16 @@ class Comment < ActiveRecord::Base
     REDIS.hset(feed_network_key, self.post_id, parsed_post.to_json)
   end
 
-  def remove_from_feed!
+  def remove_from_feed!    
     parsed_post = get_parsed_post
-  
+      
     comments = parsed_post["post"]["comments"]
-    parsed_post["post"]["comments"] = comments.delete_if { |comment| comment.id == self.id }
+    parsed_post["post"]["comments"] = comments.delete_if do |comment| 
+      comment["comment"]["external_id"] == self.external_id
+    end
+    
     REDIS.hset(feed_network_key, self.post_id, parsed_post.to_json)
   end
-  
-  private
   
   def serialized_comment(options = {})
     serialization = CommentSerializer.new(self)

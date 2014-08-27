@@ -14,7 +14,10 @@ class Key < ActiveRecord::Base
   validates :gatekeeper_id, presence: true
   validates :networks,      presence: true
                               
-  # key.networks is an array of network_ids. In truth, a key has_many networks, and a network has_many keys. I'd rather keep them decoupled for a sudo-security layer by not having those associations. An array of network_ids is enough info to go by for us.
+  # key.networks is an array of network_ids. In truth, a key has_many networks
+  # and a network has_many keys. I'd rather keep them decoupled for a 
+  # sudo-security layer by not having those associations. An array of 
+  # network_ids is enough info to go by for us.
   
   belongs_to :gatekeeper,
              class_name: "User",
@@ -42,7 +45,7 @@ class Key < ActiveRecord::Base
     networks_to_be_added = self.networks - current_user.networks.map(&:id)
     
     user_networks = networks_to_be_added.map do |network_id| 
-                      # Not an N + 1 query problem ;).
+                      # Not a N + 1 query problem ;).
                       UserNetwork.new(user_id:       current_user.id,
                                       network_id:    network_id,
                                       gatekeeper_id: self.gatekeeper_id)

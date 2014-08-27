@@ -28,10 +28,11 @@ class Post < ActiveRecord::Base
     REDIS.hdel(feed_network_key, self.id)
   end
   
-  # Essentially has_many :comments is dependent: destroy,
-  # but I don't want to call the callback for deleting from feed
-  # because it is pointless since the post just gets deleted from
-  # feed taking the comments with it anyways
+  # Essentially has_many :comments should have dependent: destroy,
+  # but I don't want to the callback to go off for deleting from feed
+  # because it is inefficient. Since the post just gets deleted from
+  # feed, the comments go with it. No need to have Comment#remove_from_feed
+  # go off for every comment.
   def delete_comments
     self.comments.delete_all
   end

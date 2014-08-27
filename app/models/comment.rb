@@ -6,21 +6,22 @@ class Comment < ActiveRecord::Base
   validates :body,        presence: true,
                           length: { maximum: 500 }
   
-  after_create  :add_to_feed!
-  after_destroy :remove_from_feed!
+  after_create  :add_to_feed        
+  after_destroy :remove_from_feed
   
   belongs_to :user
   belongs_to :post
   
+  # Ensure appropriate comment handling.
   
-  def add_to_feed!
+  def add_to_feed
     parsed_post = get_parsed_post
   
     parsed_post["post"]["comments"].push(serialized_comment)
     REDIS.hset(feed_network_key, self.post_id, parsed_post.to_json)
   end
 
-  def remove_from_feed!    
+  def remove_from_feed    
     parsed_post = get_parsed_post
       
     comments = parsed_post["post"]["comments"]

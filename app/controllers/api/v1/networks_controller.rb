@@ -1,5 +1,6 @@
 class Api::V1::NetworksController < ApiController
-
+  load_and_authorize_resource find_by: :external_id, except: [:index]
+  
   def index
     @networks = current_user.networks
     
@@ -12,11 +13,9 @@ class Api::V1::NetworksController < ApiController
   end
   
   def create
-    @network = Network.new(network_params)
-    @network.creator_id = current_user.id
-    
     if @network.save
       UserNetwork.create(user_id: current_user.id, network_id: @network.id)
+      
       render status: 200,
              json: @network,
              serializer: SimpleNetworkSerializer,
@@ -35,7 +34,10 @@ class Api::V1::NetworksController < ApiController
   private
   
   def network_params
-    params.require(:network).permit(:name)
+    params.
+      require(:network).
+      permit(:name).
+      merge(creator_id: current_user.id)
   end
 
 end

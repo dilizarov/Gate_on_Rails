@@ -1,35 +1,22 @@
 class Api::V1::KeysController < ApiController
+  load_resource find_by: :key, except: [:index]
+  authorize_resource
   
   def create
-    # TODO: Check if I could just do 
-    # @key.new(key_params, gatekeeper_id: current_user.id)
-    # For some reason, I don't think I am able to.
-    
-    @key = Key.new(key_params)
-    @key.gatekeeper_id = current_user.id
-    
     if @key.save
       render status: 200,
              json: @key,
              meta: { success: true, 
-                     info: "Key created" }
-              
+                     info: "Key created" }          
     else
       render status: :unprocessable_entity,
              json: { errors: @key.errors.full_messages }
     end
   end
   
-  # Should be ok
   def destroy
-    @key = Key.find_by_key(params[:id])
-    
-    if @key
-      @key.destroy
-      head :no_content
-    else
-      head :bad_request
-    end
+    @key.destroy
+    head :no_content
   end
   
   def index
@@ -43,9 +30,7 @@ class Api::V1::KeysController < ApiController
   
   # ActionController::Base has a method named process.
   def prokess
-    @key = Key.find_by_key(params[:key])
-    
-    if @key && @key.active?
+    if @key.active?
       @new_networks = @key.process(current_user)
       
       render status: 200,
@@ -54,7 +39,6 @@ class Api::V1::KeysController < ApiController
              meta: { success: true,
                      info: "Key processed." }
     else
-      # Convenient 423 status
       render status: :locked,
              json: { success: false,
                      info: "This key doesn't unlock the gate" }
@@ -64,7 +48,10 @@ class Api::V1::KeysController < ApiController
   private
   
   def key_params
-    params.require(:key).permit(networks: [])
+    params.
+      require(:key).
+      permit(networks: []).
+      merge(gatekeeper_id: current_user.id)
   end
   
 end

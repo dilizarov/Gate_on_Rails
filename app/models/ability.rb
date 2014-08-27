@@ -13,34 +13,35 @@ class Ability
     
     #should be fine when made.
     can :show, Network do |network|
-      user.in_network?(network)
+      user.in_network? network
     end
     
     can :create, Post do |post|
-      user.in_network?(post.network_id)
+      user.in_network? post.network_id
     end
     
-    #l&a
+    #woot!
     can :destroy, Post do |post|
-      user.owns_post?(post)
+      user.owns_post? post
     end
     
     can :create, Comment do |comment|
-      user.in_network?(comment.post.network_id)
+      user.in_network? comment.post.network_id
     end
     
-    #l&a
+    #woot!
     can :destroy, Comment do |comment|
-      user.owns_comment?(comment)
+      user.owns_comment? comment
     end
     
+    #woot!
     can :create, Key do |key|
-      user.in_networks?(key.networks)
+      user.in_networks? key.networks
     end
     
-    #l&a
+    #woot!
     can :destroy, Key do |key|
-      user.owns_key?(key)
+      user.owns_key? key
     end   
   end
 end

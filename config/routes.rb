@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users
+  #devise_for :users
   
   namespace :api do
     namespace :v1 do
@@ -9,10 +9,15 @@ Rails.application.routes.draw do
         delete 'sessions'      => 'sessions#destroy',     as: 'logout'
       end
       
-      resources :networks, only: [:create, :index, :show]
-      resources :posts,    only: [:create, :destroy]
-      resources :comments, only: [:create, :destroy]
-      resources :keys,     only: [:create, :destroy, :index]
+      resources :networks, only: [:create, :index, :show] do
+        resources :posts, only: [:create]
+      end
+      
+      resources :posts, only: [:destroy] do
+        resources :comments, only: [:create, :destroy], shallow: true
+      end
+      
+      resources :keys, only: [:create, :destroy, :index]
       post '/keys/process', to: 'keys#prokess'
     end
   end

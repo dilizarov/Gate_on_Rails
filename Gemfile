@@ -8,7 +8,7 @@ gem 'devise'
 gem 'devise-token_authenticatable'
 
 # Authorization Solution
-gem 'cancan'
+gem 'cancancan', '~> 1.9'
 
 # Serialize JSON output for nice APIs.
 gem 'active_model_serializers'

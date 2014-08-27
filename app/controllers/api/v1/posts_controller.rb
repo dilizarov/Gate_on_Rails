@@ -1,43 +1,33 @@
 class Api::V1::PostsController < ApiController
-  load_resource find_by: :external_id
+  load_resource :network, find_by: :external_id, only: [:create]
+  load_resource :post, :through => :network, only: [:create]
+  
+  load_resource find_by: :external_id, except: [:create]
+  
   authorize_resource
 
   def create
-    @network = Network.find_by(external_id: params[:network_external_id])
-    
-    if @network && current_user.in_network?(@network)
-      
-      @post = @network.posts.build(post_params)
-      @post.user_id = current_user.id
-      
-      if @post.save        
-        render status: 200,
-               json: @post
-      else
-        render status: :unprocessable_entity,
-               json: { errors: @post.errors.full_messages }
-      end
+    if @post.save        
+      render status: 200,
+             json: @post
     else
-      head :bad_request
+      render status: :unprocessable_entity,
+             json: { errors: @post.errors.full_messages }
     end
   end
   
-  # Should be ok
   def destroy
-    # post = Post.find_by(external_id: params[:id])
-#
-#     if @post && current_user.owns_post?(@post)
-      @post.destroy
-      head :no_content
-    # else
-#       head :bad_request
-#     end
+    @post.destroy
+    head :no_content
   end
   
   private
   
   def post_params
-    params.require(:post).permit(:body)
+    params.
+      require(:post).
+      permit(:body).
+      merge(user_id: current_user.id)
   end
 
 end

@@ -1,5 +1,7 @@
 class Api::V1::KeysController < ApiController
-  load_resource find_by: :key, except: [:index]
+  before_action :load_already_existing_key, only: [:destroy]
+  
+  load_resource except: [:index]
   authorize_resource
   
   def create
@@ -54,4 +56,8 @@ class Api::V1::KeysController < ApiController
       merge(gatekeeper_id: current_user.id)
   end
   
+  # CanCanCan doesn't mesh well with attr_encrypted
+  def load_already_existing_key
+    @key = Key.find_by_key(params[:id])
+  end
 end

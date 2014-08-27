@@ -22,8 +22,11 @@ gem 'attr_encrypted'
 # ENV variable store
 gem 'figaro'
 
-# in-memory datastore
+# In-memory data store
 gem 'redis', '~> 3.1.0'
+
+# Generate fake data
+gem 'faker'
 
 # Will be used for rake-task scheduling when we shift off Heroku to our own
 # servers. For now, we use Heroku's add-on.
@@ -53,5 +56,5 @@ gem 'spring',        group: :development
 # gem 'capistrano-rails', group: :development
 
 # Use debugger
-# gem 'debugger', group: [:development, :test]
+ gem 'debugger', group: [:development, :test]
 

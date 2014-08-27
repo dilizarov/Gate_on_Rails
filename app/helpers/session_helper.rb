@@ -12,7 +12,7 @@ module SessionHelper
     unless signed_in?
       render status: 401,
              json: { success: true,
-                     info: "Invalid user",
+                     info: "Gatekeeper required",
                      data: {} }
     end
   end

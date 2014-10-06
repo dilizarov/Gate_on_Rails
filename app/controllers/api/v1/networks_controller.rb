@@ -26,6 +26,7 @@ class Api::V1::NetworksController < ApiController
   end
   
   def show
+    #We consolidate, but we don't show any info about the network itself.
     @network = @network.consolidate_feed_and_users
     render status: 200,
            json: @network

@@ -19,6 +19,8 @@ Rails.application.routes.draw do
       
       resources :keys, only: [:create, :destroy, :index]
       post '/keys/process', to: 'keys#prokess'
+      
+      resource :gatekeeper_hq, only: [:show]
     end
   end
 end

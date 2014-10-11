@@ -56,7 +56,7 @@ class Key < ActiveRecord::Base
     # need the efficiency (potentially 70x+ faster) of a raw INSERT INTO sql
     # query. If we find the need or want to do so, we could go forth and do
     # that. As it stands, I don't think we need it, and this import should
-    # suffice. - David
+    # suffice.
     
     UserNetwork.import(user_networks)
     

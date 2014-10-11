@@ -6,7 +6,7 @@ class Api::V1::NetworksController < ApiController
     
     render status: 200,
            json: @networks,
-           serializer: SimpleNetworkSerializer,
+           each_serializer: SimpleNetworkSerializer,
            meta: { success: true,
                    info: "Networks",
                    total: @networks.length }

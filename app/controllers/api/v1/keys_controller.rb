@@ -37,7 +37,7 @@ class Api::V1::KeysController < ApiController
       
       render status: 200,
              json: @new_networks, 
-             serializer: SimpleNetworkSerializer,
+             each_serializer: SimpleNetworkSerializer,
              meta: { success: true,
                      info: "Key processed." }
     else

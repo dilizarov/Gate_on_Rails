@@ -1,7 +1,9 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
      
-  # current_user is overridden by line 6
-  alias_method :devise_current_user, :current_user
+  def devise_current_user
+     @devise_current_user ||= warden.authenticate(:scope => :user)
+  end
+  
   include SessionHelper
 end

@@ -1,35 +1,38 @@
-class Api::V1::SessionsController < Devise::SessionsController
-  skip_before_filter :verify_authenticity_token,
-                     if: Proc.new { |c| c.request.format == 'application/json' }
-                       
-  respond_to :json
+class Api::V1::SessionsController < ApiController
+  
+  skip_before_filter :ensure_current_user!, only: [:create]
   
   def create
-    warden.authenticate!(scope: resource_name, 
-                         recall: "#{controller_path}#failure")
-                         
-    render status: 200,
-           json: { success: true,
-                   info: "Logged in",
-                   data: { auth_token: current_user.authentication_token } }
+    @user = User.find_by(email: params[:user][:email])
+    if @user && @user.valid_password?(params[:user][:password])
+      login(@user)
+    
+      user_hash = {
+        email:       @user.email,
+        name:        @user.name,
+        auth_token:  @user.authentication_token,
+        external_id: @user.external_id,
+        created_at:  @user.created_at
+      }
+    
+      render status: 200,
+             json: { success: true,
+                     info: "Logged in",
+                     data: { user: user_hash } }
+    else
+      render status: :unprocessable_entity,
+             json: { success: false,
+                     info: "Incorrect email or password",
+                     data: {} }
+    end
   end
   
   def destroy
-    warden.authenticate!(scope: resource_name,
-                         recall: "#{controller_path}#failure")
-                         
-    current_user.update_column(:authentication_token, nil)
+    logout(@current_user)
     
     render status: 200,
            json: { success: true,
                    info: "Logged out",
-                   data: {} }
-  end
-      
-  def failure
-    render status: 401,
-           json: { success: false,
-                   info: "Login Failed",
                    data: {} }
   end
 end

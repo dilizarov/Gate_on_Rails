@@ -1,7 +1,13 @@
 module SessionHelper
   
   def current_user
-    @current_user ||= User.find_by(authentication_token: params[:auth_token])
+    
+    @current_user ||= User.find_by(external_id: params[:user_id])
+    
+    return nil unless @current_user && Devise.secure_compare(@current_user.authentication_token,
+                                                             params[:auth_token])
+                                                                               
+    @current_user    
   end
   
   def signed_in?
@@ -15,6 +21,15 @@ module SessionHelper
                      info: "Gatekeeper required",
                      data: {} }
     end
+  end
+  
+  def login(model)
+    model.authentication_token ||= Devise.friendly_token
+    model.save
+  end
+  
+  def logout(model)
+    model.update_column(:authentication_token, nil)
   end
     
 end

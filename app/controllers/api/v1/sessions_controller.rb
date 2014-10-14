@@ -7,32 +7,21 @@ class Api::V1::SessionsController < ApiController
     if @user && @user.valid_password?(params[:user][:password])
       login(@user)
     
-      user_hash = {
-        email:       @user.email,
-        name:        @user.name,
-        auth_token:  @user.authentication_token,
-        external_id: @user.external_id,
-        created_at:  @user.created_at
-      }
-    
       render status: 200,
-             json: { success: true,
-                     info: "Logged in",
-                     data: { user: user_hash } }
+             json: @user,
+             serializer: CurrentUserSerializer,
+             root: "user",
+             meta: { success: true, 
+                     info: "Logged in" }             
     else
       render status: :unprocessable_entity,
-             json: { success: false,
-                     info: "Incorrect email or password",
-                     data: {} }
+             json: { errors: "Incorrect email or password" }
     end
   end
   
   def destroy
     logout(@current_user)
     
-    render status: 200,
-           json: { success: true,
-                   info: "Logged out",
-                   data: {} }
+    head :ok
   end
 end

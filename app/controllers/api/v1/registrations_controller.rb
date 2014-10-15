@@ -20,7 +20,7 @@ class Api::V1::RegistrationsController < Devise::RegistrationsController
                      info: "Registered" }
     else
       render status: :unprocessable_entity,
-             json: { errors: resource.errors }
+             json: { errors: resource.errors.full_messages }
     end
   end
   

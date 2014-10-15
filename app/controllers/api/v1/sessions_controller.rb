@@ -15,7 +15,7 @@ class Api::V1::SessionsController < ApiController
                      info: "Logged in" }             
     else
       render status: :unprocessable_entity,
-             json: { errors: "Incorrect email or password" }
+             json: { errors: ["Incorrect email or password"] }
     end
   end
   

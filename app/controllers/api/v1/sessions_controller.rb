@@ -7,8 +7,6 @@ class Api::V1::SessionsController < ApiController
     if @user && @user.valid_password?(params[:user][:password])
       login(@user)
     
-      sleep(100000)
-    
       render status: 200,
              json: @user,
              serializer: CurrentUserSerializer,

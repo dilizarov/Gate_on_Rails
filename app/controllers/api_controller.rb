@@ -4,8 +4,7 @@ class ApiController < ApplicationController
   
   rescue_from CanCan::AccessDenied do |exception|
     render status: :unauthorized,
-           json: { success: false,
-                   info: "Gatekeeper, you are not authorized to perform this action." }
+           json: { errors: "Gatekeeper, you are not authorized to perform this action." }
 
   end
   

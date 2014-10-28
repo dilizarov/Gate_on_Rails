@@ -12,6 +12,7 @@ class User < ActiveRecord::Base
   validates :name, presence: true
   
   has_many :networks,
+           -> { order 'LOWER(networks.name)' },
            through: :user_networks
   
   has_many :user_networks,

@@ -4,8 +4,6 @@ class Api::V1::NetworksController < ApiController
   def index
     @networks = current_user.networks
     
-    sleep(4)
-    
     render status: 200,
            json: @networks,
            each_serializer: SimpleNetworkSerializer,

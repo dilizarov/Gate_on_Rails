@@ -3,7 +3,7 @@ class UserNetwork < ActiveRecord::Base
   belongs_to :user
   
   before_destroy :destroy_keys_associated_with_user_and_network
-  
+    
   private
   
   def destroy_keys_associated_with_user_and_network

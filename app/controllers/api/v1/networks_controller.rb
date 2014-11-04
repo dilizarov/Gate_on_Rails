@@ -2,7 +2,7 @@ class Api::V1::NetworksController < ApiController
   load_and_authorize_resource find_by: :external_id, except: [:index]
   
   def index
-    @networks = current_user.networks
+    @networks = current_user.networks_with_user_count
     
     render status: 200,
            json: @networks,

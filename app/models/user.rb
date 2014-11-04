@@ -24,6 +24,26 @@ class User < ActiveRecord::Base
   has_many :posts
   has_many :comments
   
+  def networks_with_user_count
+    networks = self.networks
+    
+    # Gets the number of users in each network that the user is in
+    # { 24 => 11, 3 => 14, 1 => 1, 19 => 44} where the key is the network id
+    # and the value is the number of users.
+  
+    num_of_users_per_user_network = UserNetwork.
+         joins("INNER JOIN user_networks AS un ON user_networks.network_id = un.network_id").
+         where("un.user_id = ?", self.id).
+         group("user_networks.network_id").
+         count("user_networks.user_id")
+  
+    networks.each do |network|
+      network.num_of_users = num_of_users_per_user_network[network.id]
+    end
+    
+    networks
+  end
+  
   # Takes a Network object or network id.
   def in_network?(network)
     network_id = Network === network ? network.id : network

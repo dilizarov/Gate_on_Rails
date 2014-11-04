@@ -1,6 +1,8 @@
 class Network < ActiveRecord::Base
   include Externalable
   
+  attr_accessor :num_of_users
+  
   validates :name,       presence: true
   validates :creator_id, presence: true
   

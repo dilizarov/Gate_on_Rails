@@ -35,9 +35,9 @@ class User < ActiveRecord::Base
   def in_networks?(networks)
     network_ids = Network === networks.first ? networks.map(&:id) : networks
     valid_networks = UserNetwork.where(user_id: self.id, 
-                                       network_id: network_ids)
+                                       network_id: network_ids).pluck(:network_id)
                                        
-    valid_networks.length == network_ids.length
+    (valid_networks & network_ids).length == network_ids.length
   end
   
   def owns_post?(post)

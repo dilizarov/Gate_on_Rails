@@ -31,6 +31,11 @@ class Api::V1::NetworksController < ApiController
     render status: 200,
            json: @network
   end
+  
+  def leave
+    UserNetwork.find_by(user_id: current_user.id, network_id: @network.id).destroy
+    head :ok
+  end
 
   private
   

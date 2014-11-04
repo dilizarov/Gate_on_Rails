@@ -9,15 +9,11 @@ class Key < ActiveRecord::Base
   attr_encrypted :key,      key: ENV['KEY_KEY']
   attr_encrypted :networks, key: ENV['NETWORKS_KEY'], marshal: true
 
+  before_create :swap_network_external_ids_for_network_ids!
   before_save :generate_key!
 
   validates :gatekeeper_id, presence: true
   validates :networks,      presence: true
-                              
-  # key.networks is an array of network_ids. In truth, a key has_many networks
-  # and a network has_many keys. I'd rather keep them decoupled for a 
-  # sudo-security layer by not having those associations. An array of 
-  # network_ids is enough info to go by for us.
   
   belongs_to :gatekeeper,
              class_name: "User",
@@ -37,6 +33,12 @@ class Key < ActiveRecord::Base
       key = rand(1_000_000_000_000_000...10_000_000_000_000_000)
       break self.key = key unless Key.find_by_key(key)
     end
+  end
+  
+  def swap_network_external_ids_for_network_ids!
+    network_external_ids = self.networks
+    network_ids = Network.where(external_id: network_external_ids).to_a.map(&:id)
+    self.networks = network_ids
   end
   
   def process(current_user)
@@ -60,11 +62,9 @@ class Key < ActiveRecord::Base
     
     UserNetwork.import(user_networks)
     
-    key.touch
+    self.touch
     
     new_networks = Network.where(id: networks_to_be_added).to_a
-    
-    return new_networks
   end             
   
 end

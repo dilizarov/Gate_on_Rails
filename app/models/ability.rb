@@ -2,10 +2,10 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    can :show, Network do |network|
+    can [:show, :leave], Network do |network|
       user.in_network? network
     end
-    
+      
     can :create, Post do |post|
       user.in_network? post.network_id
     end

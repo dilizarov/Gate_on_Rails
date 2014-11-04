@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       resources :networks, only: [:create, :index, :show] do
         resources :posts, only: [:create]
       end
+      delete '/networks/leave', to: 'networks#leave'
       
       resources :posts, only: [:destroy] do
         resources :comments, only: [:create, :destroy], shallow: true

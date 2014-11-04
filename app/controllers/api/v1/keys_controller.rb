@@ -1,5 +1,5 @@
 class Api::V1::KeysController < ApiController
-  before_action :load_already_existing_key, only: [:destroy]
+  before_action :load_already_existing_key, only: [:destroy, :prokess]
   
   load_resource except: [:index]
   authorize_resource
@@ -42,8 +42,7 @@ class Api::V1::KeysController < ApiController
                      info: "Key processed." }
     else
       render status: :locked,
-             json: { success: false,
-                     info: "This key doesn't unlock the gate" }
+             json: { error: "This key doesn't unlock the gate" }
     end
   end
   

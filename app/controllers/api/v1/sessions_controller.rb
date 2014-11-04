@@ -21,7 +21,6 @@ class Api::V1::SessionsController < ApiController
   
   def destroy
     logout(@current_user)
-    
-    head :ok
+    head :no_content
   end
 end

@@ -10,17 +10,23 @@ Rails.application.routes.draw do
       end
       
       resources :networks, only: [:create, :index, :show] do
+        member do
+          delete 'leave'
+        end
+        
         resources :posts, only: [:create]
       end
-      delete '/networks/leave', to: 'networks#leave'
       
       resources :posts, only: [:destroy] do
         resources :comments, only: [:create, :destroy], shallow: true
       end
       
-      resources :keys, only: [:create, :destroy, :index]
-      post '/keys/process', to: 'keys#prokess'
-      
+      resources :keys, only: [:create, :destroy, :index] do
+        member do
+          post 'process', to: 'keys#prokess'
+        end
+      end
+            
       resource :gatekeeper_hq, only: [:show]
     end
   end

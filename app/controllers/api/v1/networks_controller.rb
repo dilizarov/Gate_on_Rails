@@ -34,7 +34,7 @@ class Api::V1::NetworksController < ApiController
   
   def leave
     UserNetwork.find_by(user_id: current_user.id, network_id: @network.id).destroy
-    head :ok
+    head :no_content
   end
 
   private

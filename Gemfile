@@ -22,6 +22,9 @@ gem 'attr_encrypted'
 # ENV variable store
 gem 'figaro'
 
+# Pagination Solution
+gem 'kaminari'
+
 # In-memory data store
 gem 'redis', '~> 3.1.0'
 

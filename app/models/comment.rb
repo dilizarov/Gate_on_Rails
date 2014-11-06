@@ -10,7 +10,7 @@ class Comment < ActiveRecord::Base
 #   after_destroy :remove_from_feed
   
   belongs_to :user
-  belongs_to :post
+  belongs_to :post, counter_cache: true
   
   #Commented out for same reasons as listed in network.rb
   

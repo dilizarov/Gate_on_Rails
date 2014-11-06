@@ -26,10 +26,17 @@ class Api::V1::NetworksController < ApiController
   end
   
   def show
-    #We consolidate, but we don't show any info about the network itself.
-    @network = @network.consolidate_feed_and_users
+    unless scrolling?
+      @posts = @network.posts.page(params.has_key?(:page) ? params[:page] : 1).per(15)
+    else
+      @posts = @network.posts.where('created_at < ?', params[:infinite_scroll_buffer]).
+                        page(params[:page]).per(15)
+    end
+    
+    
     render status: 200,
-           json: @network
+           json: @posts,
+           serializer: PostSerializer
   end
   
   def leave
@@ -38,6 +45,10 @@ class Api::V1::NetworksController < ApiController
   end
 
   private
+  
+  def scrolling?
+    params.has_key?(:infinite_scroll_time_buffer)
+  end
   
   def network_params
     params.

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140821153140) do
+ActiveRecord::Schema.define(version: 20141106202658) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,12 +52,13 @@ ActiveRecord::Schema.define(version: 20140821153140) do
   add_index "networks", ["external_id"], name: "index_networks_on_external_id", unique: true, using: :btree
 
   create_table "posts", force: true do |t|
-    t.uuid     "external_id", null: false
-    t.integer  "user_id",     null: false
-    t.integer  "network_id",  null: false
-    t.text     "body",        null: false
+    t.uuid     "external_id",                null: false
+    t.integer  "user_id",                    null: false
+    t.integer  "network_id",                 null: false
+    t.text     "body",                       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "comments_count", default: 0
   end
 
   add_index "posts", ["external_id"], name: "index_posts_on_external_id", unique: true, using: :btree

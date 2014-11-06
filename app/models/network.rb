@@ -14,7 +14,7 @@ class Network < ActiveRecord::Base
   has_many :user_networks, 
            class_name: "UserNetwork"
   
-  has_many :posts
+  has_many :posts, -> { order(created_at: :desc) }
   
   belongs_to :creator, 
              class_name: "User",

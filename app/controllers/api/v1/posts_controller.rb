@@ -47,7 +47,7 @@ class Api::V1::PostsController < ApiController
   private
   
   def time_buffer
-    params.has_key?(:infinite_scroll_time_buffer) ?  : nil
+    params[:infinite_scroll_time_buffer] and Time.parse(params[:infinite_scroll_time_buffer])
   end
       
   def page

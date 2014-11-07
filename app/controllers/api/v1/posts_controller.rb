@@ -4,7 +4,7 @@ class Api::V1::PostsController < ApiController
   
   load_resource find_by: :external_id, except: [:create, :aggregate]
   
-  authorize_resource except: [:index]
+  authorize_resource except: [:index, :aggregate]
   
   def index
       @posts = @network.posts.

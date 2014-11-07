@@ -6,7 +6,6 @@ class Api::V1::NetworksController < ApiController
     
     render status: 200,
            json: @networks,
-           each_serializer: SimpleNetworkSerializer,
            meta: { success: true,
                    info: "Networks",
                    total: @networks.length }
@@ -16,7 +15,6 @@ class Api::V1::NetworksController < ApiController
     if @network.save
       render status: 200,
              json: @network,
-             serializer: SimpleNetworkSerializer,
              meta: { success: true, 
                      info: "Network made" }
     else

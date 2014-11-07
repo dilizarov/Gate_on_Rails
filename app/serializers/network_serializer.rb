@@ -1,4 +1,4 @@
-class SimpleNetworkSerializer < ActiveModel::Serializer
+class NetworkSerializer < ActiveModel::Serializer
   attributes :name, :external_id
   
   def attributes
@@ -6,4 +6,6 @@ class SimpleNetworkSerializer < ActiveModel::Serializer
     data[:users_count] = object.users_count unless object.users_count.nil?
     data
   end
+  
+  has_one :creator
 end

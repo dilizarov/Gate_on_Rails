@@ -36,7 +36,7 @@ class Api::V1::PostsController < ApiController
     @posts = current_user.feed_posts.
                          reorder(created_at: :desc).
                          created_before(time_buffer).
-                         includes([:user, :network]).
+                         includes(:user, :network).
                          page(page).
                          per(15)
     

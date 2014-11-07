@@ -2,7 +2,7 @@ class Api::V1::NetworksController < ApiController
   load_and_authorize_resource find_by: :external_id, except: [:index]
   
   def index
-    @networks = current_user.networks_with_user_count
+    @networks = current_user.networks_with_user_count(includes: :creator)
     
     render status: 200,
            json: @networks,
@@ -26,17 +26,6 @@ class Api::V1::NetworksController < ApiController
   end
   
   def show
-    unless scrolling?
-      @posts = @network.posts.page(params.has_key?(:page) ? params[:page] : 1).per(15)
-    else
-      @posts = @network.posts.where('created_at < ?', params[:infinite_scroll_buffer]).
-                        page(params[:page]).per(15)
-    end
-    
-    
-    render status: 200,
-           json: @posts,
-           serializer: PostSerializer
   end
   
   def leave
@@ -45,10 +34,6 @@ class Api::V1::NetworksController < ApiController
   end
 
   private
-  
-  def scrolling?
-    params.has_key?(:infinite_scroll_time_buffer)
-  end
   
   def network_params
     params.

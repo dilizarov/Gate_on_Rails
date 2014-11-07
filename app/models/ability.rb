@@ -2,7 +2,7 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    can [:show, :leave], Network do |network|
+    can [:read, :leave], Network do |network|
       user.in_network? network
     end
       
@@ -14,7 +14,7 @@ class Ability
       user.owns_post? post
     end
     
-    can :create, Comment do |comment|
+    can [:create], Comment do |comment|
       user.in_network? comment.post.network_id
     end
     

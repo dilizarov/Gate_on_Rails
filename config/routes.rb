@@ -14,11 +14,11 @@ Rails.application.routes.draw do
           delete 'leave'
         end
         
-        resources :posts, only: [:create]
+        resources :posts, only: [:index, :create]
       end
       
       resources :posts, only: [:destroy] do
-        resources :comments, only: [:create, :destroy], shallow: true
+        resources :comments, only: [:index, :create, :destroy], shallow: true
       end
       
       resources :keys, only: [:create, :destroy, :index] do

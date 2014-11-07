@@ -3,7 +3,7 @@ class SimpleNetworkSerializer < ActiveModel::Serializer
   
   def attributes
     data = super
-    data[:num_of_users] = object.num_of_users unless object.num_of_users.nil?
+    data[:users_count] = object.users_count unless object.users_count.nil?
     data
   end
   

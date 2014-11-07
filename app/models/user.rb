@@ -24,8 +24,10 @@ class User < ActiveRecord::Base
   has_many :posts
   has_many :comments
   
-  def networks_with_user_count
+  def networks_with_user_count(options)
     networks = self.networks
+    
+    networks = networks.includes(:creator) if options[:includes] == :creator
     
     # Gets the number of users in each network that the user is in
     # { 24 => 11, 3 => 14, 1 => 1, 19 => 44} where the key is the network id
@@ -38,7 +40,7 @@ class User < ActiveRecord::Base
          count("user_networks.user_id")
   
     networks.each do |network|
-      network.num_of_users = num_of_users_per_user_network[network.id]
+      network.users_count = num_of_users_per_user_network[network.id]
     end
     
     networks

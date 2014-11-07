@@ -6,6 +6,10 @@ class Api::V1::CommentsController < ApiController
   
   authorize_resource
   
+  def index
+    
+  end
+  
   def create
     if @comment.save
       render status: 200,

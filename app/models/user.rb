@@ -20,11 +20,15 @@ class User < ActiveRecord::Base
            
   has_many :keys,
            foreign_key: :gatekeeper_id
-           
+  
+  has_many :feed_posts,
+           through: :networks,
+           source: :posts
+  
   has_many :posts
   has_many :comments
   
-  def networks_with_user_count(options)
+  def networks_with_users_count(options)
     networks = self.networks
     
     networks = networks.includes(:creator) if options[:includes] == :creator

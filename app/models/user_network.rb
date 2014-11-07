@@ -1,6 +1,6 @@
 class UserNetwork < ActiveRecord::Base
-  belongs_to :network
-  belongs_to :user
+  belongs_to :network, inverse_of: :user_networks
+  belongs_to :user,    inverse_of: :user_networks
   
   before_destroy :destroy_keys_associated_with_user_and_network!
     

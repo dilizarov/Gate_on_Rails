@@ -1,6 +1,8 @@
 class Post < ActiveRecord::Base
   include Externalable
   
+  scope :created_before, ->(time = nil) { where('posts.created_at < ?', time) if time }
+  
   validates :user_id,     presence: true
   validates :network_id,  presence: true
   validates :body,        presence: true,

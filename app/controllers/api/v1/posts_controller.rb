@@ -1,21 +1,18 @@
 class Api::V1::PostsController < ApiController
-  load_and_authorize_resource :network, find_by: :external_id, except: [:destroy]
+  load_and_authorize_resource :network, find_by: :external_id, except: [:destroy, :aggregate]
   load_resource :post, :through => :network, only: [:create]
   
-  load_resource find_by: :external_id, except: [:create]
+  load_resource find_by: :external_id, except: [:create, :aggregate]
   
   authorize_resource except: [:index]
   
   def index
-    unless scrolling?
-      @posts = @network.posts.page(params.has_key?(:page) ? params[:page] : 1).per(15)
-    else
-      @posts = @network.posts.where('created_at < ?', params[:infinite_scroll_time_buffer]).
-                        page(params[:page]).per(15)
-    end
-    
-    @posts = @posts.includes(:user)
-    
+      @posts = @network.posts.
+                        includes(:user).
+                        created_before(time_buffer).
+                        page(page).
+                        per(15)
+                            
     render status: 200,
            json: @posts
   end
@@ -35,10 +32,26 @@ class Api::V1::PostsController < ApiController
     head :no_content
   end
   
+  def aggregate
+    @posts = current_user.feed_posts.
+                         reorder(created_at: :desc).
+                         created_before(time_buffer).
+                         includes([:user, :network]).
+                         page(page).
+                         per(15)
+    
+    render status: 200,
+           json: @posts
+  end
+  
   private
   
-  def scrolling?
-    params.has_key?(:infinite_scroll_time_buffer)
+  def time_buffer
+    params.has_key?(:infinite_scroll_time_buffer) ?  : nil
+  end
+      
+  def page
+    params.has_key?(:page) ? params[:page] : 1
   end
   
   def post_params

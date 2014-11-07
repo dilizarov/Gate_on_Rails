@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       resources :posts, only: [:destroy] do
         resources :comments, only: [:index, :create, :destroy], shallow: true
       end
+      get 'aggregate' => 'posts#aggregate'
       
       resources :keys, only: [:create, :destroy, :index] do
         member do

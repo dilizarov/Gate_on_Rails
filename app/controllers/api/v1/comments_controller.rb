@@ -1,13 +1,16 @@
 class Api::V1::CommentsController < ApiController
-  load_resource :post, find_by: :external_id, only: [:create]
+  load_and_authorize_resource :post, find_by: :external_id, except: [:destroy]
   load_resource :comment, :through => :post, only: [:create]
   
-  load_resource find_by: :external_id, except: [:create]
+  load_resource find_by: :external_id, only: [:destroy]
   
-  authorize_resource
+  authorize_resource except: [:index]
   
   def index
+    @comments = @post.comments.includes(:user)
     
+    render status: 200,
+           json: @comments
   end
   
   def create

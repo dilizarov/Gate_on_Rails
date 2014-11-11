@@ -13,6 +13,7 @@ class Post < ActiveRecord::Base
 #   after_destroy :delete_comments
   
   has_many :comments,
+           -> { order(created_at: :asc) },
            dependent: :destroy
   
   belongs_to :user

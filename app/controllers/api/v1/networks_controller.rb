@@ -1,6 +1,6 @@
 class Api::V1::NetworksController < ApiController
-  load_and_authorize_resource find_by: :external_id, except: [:index]
-  
+  load_resource find_by: :external_id, except: [:index]
+  authorize_resource only: [:leave]
   def index
     @networks = current_user.networks_with_users_count(includes: :creator)
     

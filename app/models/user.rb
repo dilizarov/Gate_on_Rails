@@ -50,6 +50,20 @@ class User < ActiveRecord::Base
     networks
   end
   
+  def grant_access(networks, other_user)
+    
+    # Filter out networks that other_user is already part of.
+    networks_to_be_added = networks.map(&:id) - other_user.networks.map(&:id)
+    
+    user_networks = networks_to_be_added.map do |network_id|
+                      UserNetwork.new(user_id: other_user.id,
+                                      network_id: network_id,
+                                      gatekeeper_id: self.id)
+                    end
+    
+    UserNetwork.import(user_networks)
+  end
+  
   # Takes a Network object or network id.
   def in_network?(network)
     network_id = Network === network ? network.id : network

@@ -28,7 +28,9 @@ Rails.application.routes.draw do
         end
       end
             
-      resource :gatekeeper_hq, only: [:show]
+      resource :gatekeeper_hq, only: [:show] do
+        post 'grant_access' => 'gatekeeper_hqs#grant_access'
+      end
     end
   end
 end

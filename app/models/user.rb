@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
   has_many :posts
   has_many :comments
   
-  def networks_with_users_count(options)
+  def networks_with_users_count(options = {})
     networks = self.networks
     
     networks = networks.includes(:creator) if options[:includes] == :creator
@@ -50,13 +50,13 @@ class User < ActiveRecord::Base
     networks
   end
   
-  def grant_access(networks, other_user)
+  def grant_access(networks, user)
     
     # Filter out networks that other_user is already part of.
-    networks_to_be_added = networks.map(&:id) - other_user.networks.map(&:id)
+    networks_to_be_added = networks.map(&:id) - user.networks.map(&:id)
     
     user_networks = networks_to_be_added.map do |network_id|
-                      UserNetwork.new(user_id: other_user.id,
+                      UserNetwork.new(user_id: user.id,
                                       network_id: network_id,
                                       gatekeeper_id: self.id)
                     end

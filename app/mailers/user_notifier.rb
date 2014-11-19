@@ -4,6 +4,7 @@ class UserNotifier < ActionMailer::Base
   def send_forgot_password_email(user)
     @user = user
     mail(to: @user.email,
-         subject: "Reset your password")
+         subject: "Reset your password",
+         display_name: "Gate")
   end
 end

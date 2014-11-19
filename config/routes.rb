@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  devise_for :users
+  get 'forgot_password' => 'users#forgot_password'
+  get 'reset_password'  => 'users#reset_password'
   
   namespace :api do
     namespace :v1 do

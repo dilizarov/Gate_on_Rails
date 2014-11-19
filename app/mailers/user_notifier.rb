@@ -5,4 +5,5 @@ class UserNotifier < ActionMailer::Base
     @user = user
     mail(to: @user.email,
          subject: "Reset your password")
+  end
 end

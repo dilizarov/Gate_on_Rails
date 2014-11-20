@@ -1,35 +1,38 @@
 source 'https://rubygems.org'
 
 gem 'rails', '4.1.4'
-gem 'pg'
+gem 'pg', '0.17.1'
 
 # Authentication Solution
-gem 'devise'
-gem 'devise-token_authenticatable'
+gem 'devise', '3.3.0'
+gem 'devise-token_authenticatable', '0.2.0'
 
 # Authorization Solution
 gem 'cancancan', '~> 1.9'
 
 # Serialize JSON output for nice APIs.
-gem 'active_model_serializers'
+gem 'active_model_serializers', '0.9.0'
 
 # Easy bulk insert of data into DB
-gem 'activerecord-import'
+gem 'activerecord-import', '0.6.0'
 
 # Abstract away the fact that cetrain data in the DB is encrypted
-gem 'attr_encrypted'
+gem 'attr_encrypted', '1.3.3'
 
 # ENV variable store
-gem 'figaro'
+gem 'figaro', '1.0.0'
 
 # Pagination Solution
-gem 'kaminari'
+gem 'kaminari', '0.16.1'
 
 # In-memory data store
 gem 'redis', '~> 3.1.0'
 
 # Generate fake data
-gem 'faker'
+gem 'faker', '1.4.3'
+
+# Will be used for upvote/like/^ functionality
+gem 'acts_as_votable', '~> 0.10.0'
 
 # Will be used for rake-task scheduling when we shift off Heroku to our own
 # servers. For now, we use Heroku's add-on.
@@ -59,7 +62,6 @@ gem 'spring',        group: :development
 # gem 'capistrano-rails', group: :development
 
 # Use debugger
- gem 'debugger', group: [:development, :test]
- 
- gem 'rails_12factor', group: :production
+gem 'debugger', group: [:development, :test]
+gem 'rails_12factor', group: :production
 

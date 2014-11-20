@@ -1,6 +1,8 @@
 class User < ActiveRecord::Base
   include Externalable
   
+  acts_as_voter
+  
   # Others available are:
   # :lockable, :timeoutable, :confirmable and :omniauthable
   devise :database_authenticatable, :registerable,

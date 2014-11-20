@@ -19,11 +19,13 @@ Rails.application.routes.draw do
       end
       
       resources :posts, only: [:destroy] do
-        get 'up' => 'posts#up'
+        member do
+          get 'up'
+        end
         resources :comments, only: [:index, :create, :destroy], shallow: true
       end
       get 'aggregate' => 'posts#aggregate'
-      get 'comments/:comment_id/up', to: 'comments#up'
+      get 'comments/:id/up', to: 'comments#up'
       
       resources :keys, only: [:create, :destroy, :index] do
         member do

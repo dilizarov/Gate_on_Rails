@@ -7,7 +7,7 @@ class Api::V1::CommentsController < ApiController
   authorize_resource except: [:index]
   
   def index
-    @comments = @post.comments.includes(:user)
+    @comments = @post.comments.includes(:user).to_a
     
     user.mark_uped_comments!(@comments)
     

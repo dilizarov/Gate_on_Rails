@@ -2,7 +2,7 @@ class Api::V1::PostsController < ApiController
   load_and_authorize_resource :network, find_by: :external_id, except: [:destroy, :aggregate, :up]
   load_resource :post, :through => :network, only: [:create]
   
-  load_resource find_by: :external_id, except: [:create, :aggregate, :up]
+  load_resource find_by: :external_id, except: [:create, :aggregate]
   
   authorize_resource except: [:index, :aggregate]
   
@@ -11,7 +11,8 @@ class Api::V1::PostsController < ApiController
                       includes(:user).
                       created_before(time_buffer).
                       page(page).
-                      per(15)
+                      per(15).
+                      to_a
                       
     current_user.mark_uped_posts!(@posts)                                  
                             
@@ -40,7 +41,8 @@ class Api::V1::PostsController < ApiController
                          created_before(time_buffer).
                          includes(:user, :network).
                          page(page).
-                         per(15)
+                         per(15).
+                         to_a
                          
     current_user.mark_uped_posts!(@posts)
     

@@ -11,20 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141120000507) do
+ActiveRecord::Schema.define(version: 20141120012130) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "comments", force: true do |t|
-    t.uuid     "external_id", null: false
-    t.integer  "user_id",     null: false
-    t.integer  "post_id",     null: false
-    t.text     "body",        null: false
+    t.uuid     "external_id",                 null: false
+    t.integer  "user_id",                     null: false
+    t.integer  "post_id",                     null: false
+    t.text     "body",                        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cached_votes_up", default: 0
   end
 
+  add_index "comments", ["cached_votes_up"], name: "index_comments_on_cached_votes_up", using: :btree
   add_index "comments", ["external_id"], name: "index_comments_on_external_id", unique: true, using: :btree
   add_index "comments", ["post_id"], name: "index_comments_on_post_id", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
@@ -52,15 +54,17 @@ ActiveRecord::Schema.define(version: 20141120000507) do
   add_index "networks", ["external_id"], name: "index_networks_on_external_id", unique: true, using: :btree
 
   create_table "posts", force: true do |t|
-    t.uuid     "external_id",                null: false
-    t.integer  "user_id",                    null: false
-    t.integer  "network_id",                 null: false
-    t.text     "body",                       null: false
+    t.uuid     "external_id",                 null: false
+    t.integer  "user_id",                     null: false
+    t.integer  "network_id",                  null: false
+    t.text     "body",                        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "comments_count", default: 0
+    t.integer  "comments_count",  default: 0
+    t.integer  "cached_votes_up", default: 0
   end
 
+  add_index "posts", ["cached_votes_up"], name: "index_posts_on_cached_votes_up", using: :btree
   add_index "posts", ["external_id"], name: "index_posts_on_external_id", unique: true, using: :btree
   add_index "posts", ["network_id"], name: "index_posts_on_network_id", using: :btree
   add_index "posts", ["user_id"], name: "index_posts_on_user_id", using: :btree

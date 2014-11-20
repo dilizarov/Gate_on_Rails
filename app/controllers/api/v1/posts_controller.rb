@@ -7,11 +7,13 @@ class Api::V1::PostsController < ApiController
   authorize_resource except: [:index, :aggregate]
   
   def index
-      @posts = @network.posts.
-                        includes(:user).
-                        created_before(time_buffer).
-                        page(page).
-                        per(15)
+    @posts = @network.posts.
+                      includes(:user).
+                      created_before(time_buffer).
+                      page(page).
+                      per(15)
+                      
+    current_user.mark_uped_posts!(@posts)                                  
                             
     render status: 200,
            json: @posts
@@ -39,6 +41,8 @@ class Api::V1::PostsController < ApiController
                          includes(:user, :network).
                          page(page).
                          per(15)
+                         
+    current_user.mark_uped_posts!(@posts)
     
     render status: 200,
            json: @posts

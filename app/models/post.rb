@@ -3,6 +3,8 @@ class Post < ActiveRecord::Base
   
   acts_as_votable
   
+  attr_accessor :uped
+  
   scope :created_before, ->(time = nil) { where('posts.created_at < ?', time) if time }
   
   validates :user_id,     presence: true

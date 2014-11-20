@@ -66,6 +66,16 @@ class User < ActiveRecord::Base
     UserNetwork.import(user_networks)
   end
   
+  def mark_uped_posts!(posts)
+    uped_post_ids = self.find_up_votes_for_class(Post).where(votable_id: posts).map(&:votable_id)
+    posts.each { |post| post.uped = uped_post_ids.include?(post.id) }
+  end
+  
+  def mark_uped_comments!(comments)
+    uped_comment_ids = self.find_up_votes_for_class(Comment).where(votable_id: comments).map(&:votable_id)
+    comments.each { |comment| comment.uped = uped_comment_ids.include?(comment.id) }
+  end
+  
   # Takes a Network object or network id.
   def in_network?(network)
     network_id = Network === network ? network.id : network

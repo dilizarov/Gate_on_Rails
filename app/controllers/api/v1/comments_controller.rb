@@ -1,8 +1,8 @@
 class Api::V1::CommentsController < ApiController
-  load_and_authorize_resource :post, find_by: :external_id, except: [:destroy]
+  load_and_authorize_resource :post, find_by: :external_id, except: [:destroy, :up]
   load_resource :comment, :through => :post, only: [:create]
   
-  load_resource find_by: :external_id, only: [:destroy]
+  load_resource find_by: :external_id, only: [:destroy, :up]
   
   authorize_resource except: [:index]
   
@@ -27,6 +27,13 @@ class Api::V1::CommentsController < ApiController
     @comment.destroy
     head :no_content
   end
+  
+  def up
+    params[:revert] ? @comment.unliked_by(current_user) : @comment.liked_by(current_user)
+    
+    head :no_content
+  end
+  
   
   private
   

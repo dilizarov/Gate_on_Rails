@@ -1,8 +1,8 @@
 class Api::V1::PostsController < ApiController
-  load_and_authorize_resource :network, find_by: :external_id, except: [:destroy, :aggregate]
+  load_and_authorize_resource :network, find_by: :external_id, except: [:destroy, :aggregate, :up]
   load_resource :post, :through => :network, only: [:create]
   
-  load_resource find_by: :external_id, except: [:create, :aggregate]
+  load_resource find_by: :external_id, except: [:create, :aggregate, :up]
   
   authorize_resource except: [:index, :aggregate]
   
@@ -42,6 +42,12 @@ class Api::V1::PostsController < ApiController
     
     render status: 200,
            json: @posts
+  end
+  
+  def up
+    params[:revert] ? @post.unliked_by(current_user) : @post.liked_by(current_user)
+    
+    head :no_content
   end
   
   private

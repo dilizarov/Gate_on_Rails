@@ -9,7 +9,7 @@ class Api::V1::CommentsController < ApiController
   def index
     @comments = @post.comments.includes(:user).to_a
     
-    user.mark_uped_comments!(@comments)
+    current_user.mark_uped_comments!(@comments)
     
     render status: 200,
            json: @comments

@@ -1,16 +1,14 @@
 class Api::V1::RegistrationsController < Devise::RegistrationsController
   skip_before_filter :verify_authenticity_token,
                      if: Proc.new { |c| c.request.format == 'application/json' }
-                       
-  before_action :configure_permitted_parameters
-  
+                         
   respond_to :json
   
   def create
     build_resource(sign_up_params)
     
     if resource.save
-      login(resource)
+      login!(resource)
       
       render status: 200,
              json: resource,
@@ -26,9 +24,7 @@ class Api::V1::RegistrationsController < Devise::RegistrationsController
   
   private
   
-  def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) do |u|
-      u.permit(:name, :email, :password, :password_confirmation)
-    end
+  def sign_up_params
+    params.require(:user).permit(:name, :email, :password, :password_confirmation)
   end
 end

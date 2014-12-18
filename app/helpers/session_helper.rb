@@ -21,12 +21,12 @@ module SessionHelper
     end
   end
   
-  def login(model)
+  def login!(model)
     model.authentication_token ||= Devise.friendly_token
     model.save
   end
   
-  def logout(model)
+  def logout!(model)
     model.update_column(:authentication_token, nil)
   end
     

@@ -24,7 +24,11 @@ class Api::V1::RegistrationsController < Devise::RegistrationsController
   
   private
   
+  # Had to change a devise solution. Devise has been really flaky for me during
+  # this project. I might just scrape it all together and use my own solutions
+  # while borrowing from the Devise source-code for a few helper methods I use.
+  # - David
   def sign_up_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation)
+    params.require(:user).permit(:name, :email, :password)
   end
 end

@@ -17,7 +17,7 @@ module SessionHelper
   def ensure_current_user!
     unless signed_in?
       render status: 401,
-             json: { errors: "Gatekeeper required" }
+             json: { errors: [ "Gatekeeper required" ] }
     end
   end
   

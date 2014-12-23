@@ -8,6 +8,8 @@ class Notifications
   # args[2..-1] : Vary according to Notification Type
   def perform(*args)
     
+    logger.info "#{POST_CREATED_NOTIFICATION}"
+    
     case args[0]
     when POST_CREATED_NOTIFICATION
       send_post_created_notification(args)
@@ -23,6 +25,8 @@ class Notifications
   end
   
   def send_post_created_notification(args)
+    logger.info "Processing the request... #{args}"
+    
     current_user_id   = args[1]
     current_user_name = args[2]
     post_network_id   = args[3]

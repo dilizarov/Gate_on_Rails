@@ -13,7 +13,6 @@ class User < ActiveRecord::Base
   
   validates :name, presence: true
   
-  
   has_many :networks,
            -> { order 'LOWER(networks.name)' },
            through: :user_networks
@@ -30,6 +29,7 @@ class User < ActiveRecord::Base
   
   has_many :posts
   has_many :comments
+  has_many :devices
   
   def networks_with_users_count(options = {})
     networks = self.networks
@@ -103,5 +103,23 @@ class User < ActiveRecord::Base
   
   def owns_key?(key)
     self.id == key.gatekeeper_id
+  end
+  
+  def sync_device(params)
+    return if params[:token].nil? && params[:platform].nil?
+    
+    device = Device.where(token: params[:token]).find_or_create
+    device.platform = params[:platform]
+    device.user_id = self.id
+    device.save
+  end
+  
+  def unsync_device(params)
+    return if params[:token].nil?
+    
+    device = Device.find_by(token: params[:token])
+    if device && device.user_id == self.id
+      device.destroy
+    end
   end
 end

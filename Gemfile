@@ -22,6 +22,12 @@ gem 'attr_encrypted', '1.3.3'
 # ENV variable store
 gem 'figaro', '1.0.0'
 
+# Notifications sender for Android, iOS, etc.
+gem 'pushmeup'
+
+# Background worker to do tasks off a REDIS queue 
+gem 'sidekiq'
+
 # Pagination Solution
 gem 'kaminari', '0.16.1'
 

@@ -21,7 +21,13 @@ class Api::V1::PostsController < ApiController
   end
 
   def create
-    if @post.save        
+    if @post.save
+      Notifications.perform_async(POST_CREATED_NOTIFICATION,
+                                  current_user.id,
+                                  current_user.name,
+                                  @post.network_id,
+                                  @post.body)
+              
       render status: 200,
              json: @post
     else

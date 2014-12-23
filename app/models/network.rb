@@ -16,6 +16,9 @@ class Network < ActiveRecord::Base
   
   has_many :posts, -> { order(created_at: :desc) }
   
+  has_many :devices,
+           through: :users
+  
   belongs_to :creator, 
              class_name: "User",
              foreign_key: :creator_id

@@ -1,4 +1,4 @@
-require 'pushwithme'
+require 'pushmeup'
 
 class Notifications
   include Sidekiq::Worker

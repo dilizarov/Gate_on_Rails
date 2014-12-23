@@ -7,7 +7,7 @@ Rails.application.routes.draw do
       devise_for :users, only: :registrations, path: '/registrations'
       
       post   'sessions'      => 'sessions#create',      as: 'login'
-      delete 'sessions'      => 'sessions#destroy',     as: 'logout'
+      post   'sessions'      => 'sessions#destroy',     as: 'logout'
       
       resources :networks, only: [:create, :index, :show] do
         member do

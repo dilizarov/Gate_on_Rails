@@ -36,7 +36,7 @@ class Notifications
     message = "#{current_user_name} just posted in #{network.name}: #{post_body}"
     
     data = {
-      notification_type: args[0]
+      notification_type: args[0],
       message: message
     }
     

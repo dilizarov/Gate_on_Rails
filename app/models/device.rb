@@ -7,7 +7,7 @@ class Device < ActiveRecord::Base
   
   scope :platform_is, -> (device_platform) { where(platform: device_platform.to_s.downcase) }
   
-  before_validation: :format_attributes_for_persist!
+  before_validation :format_attributes_for_persist!
   
   def platform_is?(device_platform)
     device_platform.to_s.downcase == platform.downcase

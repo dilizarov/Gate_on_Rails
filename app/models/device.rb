@@ -14,6 +14,6 @@ class Device < ActiveRecord::Base
   end
   
   def format_attributes_for_persist!
-    platfom.downcase! if attribute_present?("platform")
+    platform.downcase! if attribute_present?("platform")
   end
 end

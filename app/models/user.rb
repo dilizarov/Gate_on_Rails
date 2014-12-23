@@ -108,7 +108,7 @@ class User < ActiveRecord::Base
   def sync_device(params)
     return if params[:token].nil? && params[:platform].nil?
     
-    device = Device.where(token: params[:token]).find_or_create
+    device = Device.find_or_initialize_by(token: params[:token])
     device.platform = params[:platform]
     device.user_id = self.id
     device.save

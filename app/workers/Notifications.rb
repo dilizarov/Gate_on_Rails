@@ -47,6 +47,8 @@ class Notifications
       post_body: post_body
     }
     
+    logger.i "Uh, where is everyone?"
+    
     GCM.send_notification(destinations, data)
   end
   

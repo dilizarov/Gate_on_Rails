@@ -2,6 +2,7 @@ require 'pushmeup'
 
 class Notifications
   include Sidekiq::Worker
+  sidekiq_options :retry => false 
 
   # args[0]  : Notification Type
   # args[1] : Current User ID
@@ -34,7 +35,11 @@ class Notifications
     
     destinations = network.devices.where('users.id != ?', current_user_id).map(&:token)
     
+    Logger.i "#{destinations}"
+    
     return if destinations.empty?
+    
+    Logger.i "Yello, #{destinations.empty?}"
     
     message = "#{current_user_name} just posted in #{network.name}: #{post_body}"
     
@@ -54,6 +59,8 @@ class Notifications
   end
   
   def send_comment_created_notification(args)
+    
+    Logger.i "o.O"
     
     current_user_id   = args[1]
     current_user_name = args[2]

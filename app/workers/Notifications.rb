@@ -9,6 +9,8 @@ class Notifications
   # args[2..-1] : Vary according to Notification Type
   def perform(*args)
         
+    logger.info "no"
+        
     case args[0]
     when POST_CREATED_NOTIFICATION
       send_post_created_notification(args)
@@ -34,12 +36,12 @@ class Notifications
     return unless network
     
     destinations = network.devices.where('users.id != ?', current_user_id).map(&:token)
-    
-    Logger.i "#{destinations}"
+
+    logger.info "destinations: #{destinations}"
     
     return if destinations.empty?
     
-    Logger.i "Yello, #{destinations.empty?}"
+        logger.info "#{destinations.empty?}"
     
     message = "#{current_user_name} just posted in #{network.name}: #{post_body}"
     
@@ -77,9 +79,7 @@ class Notifications
     destinations = Device.where(user_id: user_ids).map(&:token)
     
     return if destinations.empty?
-    
-    message = "#{current_user_name} commented on a post: #{comment_body}"
-    
+        
     data = {
       notification_type: args[0],
       message: message,

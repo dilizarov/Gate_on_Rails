@@ -8,6 +8,12 @@ class Api::V1::GatekeepersController < ApiController
      
      gatekeeper.grant_access(@networks, current_user)
      
+     # Notifications.process_async(GATE_JOINED_NOTFICATION,
+     #                             current_user.id,
+     #                             current_user.name,
+     #                             gatekeeper.id,
+     #                             gatekeeper.name)
+     
      @networks = current_user.networks_with_users_count(includes: :creator).select { |network| @networks.include? network }
      
      render status: 200,

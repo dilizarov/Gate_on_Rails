@@ -23,16 +23,12 @@ class Api::V1::PostsController < ApiController
   def create
     if @post.save
       
-      logger.info "POST CREATED"
-      
       Notifications.perform_async(POST_CREATED_NOTIFICATION,
                                   current_user.id,
                                   current_user.name,
                                   @post.network_id,
                                   @post.body)
-      
-      logger.info "here i am!!"
-              
+                    
       render status: 200,
              json: @post
     else

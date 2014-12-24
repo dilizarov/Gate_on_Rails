@@ -56,8 +56,6 @@ class Notifications
   
   def send_comment_created_notification(args)
     
-    Logger.i "o.O"
-    
     current_user_id   = args[1]
     current_user_name = args[2]
     comment_post_id   = args[3]

@@ -42,7 +42,7 @@ class Notifications
       notification_type: args[0],
       summary: summary,
       gate: network.name,
-      extended_text: extended_text
+      extended_text: extended_text,
       poster: current_user_name,
       post_body: post_body
     }

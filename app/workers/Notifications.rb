@@ -35,14 +35,14 @@ class Notifications
 
     return if destinations.empty?
     
-    title = "New Post"
-    summary = "#{current_user_name} just posted in #{network.name}"
+    summary = "#{current_user_name} just posted"
+    extended_text = "#{current_user_name} - #{post_body}"
     
     data = {
       notification_type: args[0],
-      title: title,
       summary: summary,
       gate: network.name,
+      extended_text: extended_text
       poster: current_user_name,
       post_body: post_body
     }
@@ -68,11 +68,15 @@ class Notifications
     
     return if destinations.empty?
     
-    message = "#{current_user_name} just commented on a post: #{comment_body}"
-        
+    title = "new comment"
+    summary = "#{current_user_name} commented on related post"
+    extended_text = "#{current_user_name} - #{comment_body}"
+    
     data = {
       notification_type: args[0],
-      message: message,
+      title: title,
+      summary: summary,
+      extended_text: extended_text,
       commenter: current_user_name,
       comment_body: comment_body
     }

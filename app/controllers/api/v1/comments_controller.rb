@@ -37,7 +37,16 @@ class Api::V1::CommentsController < ApiController
   end
   
   def up
-    params[:revert] ? @comment.unliked_by(current_user) : @comment.liked_by(current_user)
+    if params[:revert]
+      @comment.unliked_by(current_user)
+    else
+      @comment.liked_by(current_user)
+    
+      Notifications.perform_async(COMMENT_LIKED_NOTIFICATION,
+                                  current_user.id,
+                                  current_user.name,
+                                  @comment.user_id)
+    end
     
     head :no_content
   end

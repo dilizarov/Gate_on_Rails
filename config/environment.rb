@@ -7,7 +7,6 @@ Rails.application.initialize!
 # Constants that aren't a secret but are to be used throughout.
 
 POST_CREATED_NOTIFICATION    = 42
-GATE_JOINED_NOTIFICATION     = 84
 COMMENT_CREATED_NOTIFICATION = 126
 POST_LIKED_NOTIFICATION      = 168
 COMMENT_LIKED_NOTIFICATION   = 210

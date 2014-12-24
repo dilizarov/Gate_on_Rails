@@ -12,8 +12,6 @@ class Notifications
     case args[0]
     when POST_CREATED_NOTIFICATION
       send_post_created_notification(args)
-    when GATE_JOINED_NOTIFICATION
-      send_gate_joined_notification(args)
     when COMMENT_CREATED_NOTIFICATION
       send_comment_created_notification(args)
     when POST_LIKED_NOTIFICATION
@@ -37,21 +35,19 @@ class Notifications
 
     return if destinations.empty?
     
-    message = "#{current_user_name} just posted in #{network.name}: #{post_body}"
+    title = "New Post"
+    summary = "#{current_user_name} just posted in #{network.name}"
     
     data = {
       notification_type: args[0],
-      message: message,
+      title: title,
+      summary: summary,
       gate: network.name,
       poster: current_user_name,
       post_body: post_body
     }
     
     GCM.send_notification(destinations, data)
-  end
-  
-  def send_gate_joined_notification(args)
-  
   end
   
   def send_comment_created_notification(args)
@@ -86,9 +82,47 @@ class Notifications
   
   def send_post_liked_notification(args)
     
+    current_user_id   = args[1]
+    current_user_name = args[2]
+    post_user_id      = args[3]
+    
+    return if post_user_id == current_user_id
+    
+    destinations = Device.where(user_id: post_user_id).map(&:token)
+    
+    return if destinations.empty?
+    
+    message = "#{current_user_name} just liked your post"
+    
+    data = {
+      notification_type: args[0],
+      message: message,
+      liker: current_user_name
+    }
+    
+    GCM.send_notification(destinations, data)
   end
   
   def send_comment_liked_notification(args)
     
+    current_user_id   = args[1]
+    current_user_name = args[2]
+    comment_user_id   = args[3]
+    
+    return if comment_user_id == current_user_id
+    
+    destinations = Device.where(user_id: comment_user_id).map(&:token)
+    
+    return if destinations.empty?
+    
+    message = "#{current_user_name} just liked your comment"
+    
+    data = {
+      notification_type: args[0],
+      message: message,
+      liker: current_user_name
+    }
+    
+    GCM.send_notification(destinations, data)
   end
 end

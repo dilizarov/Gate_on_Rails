@@ -58,7 +58,16 @@ class Api::V1::PostsController < ApiController
   end
   
   def up
-    params[:revert] ? @post.unliked_by(current_user) : @post.liked_by(current_user)
+    if params[:revert]
+      @post.unliked_by(current_user)
+    else
+      @post.liked_by(current_user)
+      
+      Notifications.perform_async(POST_LIKED_NOTIFICATION,
+                                  current_user.id,
+                                  current_user.name,
+                                  @post.user_id)
+    end
     
     head :no_content
   end

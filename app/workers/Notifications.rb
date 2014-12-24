@@ -9,8 +9,6 @@ class Notifications
   # args[2..-1] : Vary according to Notification Type
   def perform(*args)
         
-    logger.info "no"
-        
     case args[0]
     when POST_CREATED_NOTIFICATION
       send_post_created_notification(args)
@@ -37,11 +35,7 @@ class Notifications
     
     destinations = network.devices.where('users.id != ?', current_user_id).map(&:token)
 
-    logger.info "destinations: #{destinations}"
-    
     return if destinations.empty?
-    
-        logger.info "#{destinations.empty?}"
     
     message = "#{current_user_name} just posted in #{network.name}: #{post_body}"
     

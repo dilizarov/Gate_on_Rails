@@ -20,8 +20,8 @@ class Api::V1::CommentsController < ApiController
       Notifications.process_async(COMMENT_CREATED_NOTIFICATION,
                                   current_user.id,
                                   current_user.name,
-                                  comment.post_id,
-                                  comment.body)
+                                  @comment.post_id,
+                                  @comment.body)
       
       render status: 200,
              json: @comment

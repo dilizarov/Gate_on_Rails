@@ -71,6 +71,8 @@ class Notifications
     destinations = Device.where(user_id: user_ids).map(&:token)
     
     return if destinations.empty?
+    
+    message = "#{current_user_name} just commented on a post: #{comment_body}"
         
     data = {
       notification_type: args[0],

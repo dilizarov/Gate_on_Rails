@@ -1,5 +1,5 @@
 class Api::V1::PostsController < ApiController
-  load_and_authorize_resource :network, find_by: :external_id, except: [:destroy, :aggregate, :up]
+  load_and_authorize_resource :network, find_by: :external_id, except: [:destroy, :aggregate, :up, :show]
   load_resource :post, :through => :network, only: [:create]
   
   load_resource find_by: :external_id, except: [:create, :aggregate]
@@ -18,6 +18,13 @@ class Api::V1::PostsController < ApiController
                             
     render status: 200,
            json: @posts
+  end
+
+  def show
+    current_user.mark_uped_posts!([@post])
+    
+    render status: 200,
+           json: @post
   end
 
   def create

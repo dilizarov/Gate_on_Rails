@@ -78,7 +78,8 @@ class Notifications
       summary: summary,
       extended_text: extended_text,
       commenter: current_user_name,
-      comment_body: comment_body
+      comment_body: comment_body,
+      post_id: comment_post_id
     }
     
     GCM.send_notification(destinations, data)

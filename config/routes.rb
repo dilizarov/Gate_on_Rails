@@ -17,7 +17,7 @@ Rails.application.routes.draw do
         resources :posts, only: [:index, :create]
       end
       
-      resources :posts, only: [:destroy] do
+      resources :posts, only: [:destroy, :show] do
         member do
           get 'up'
         end

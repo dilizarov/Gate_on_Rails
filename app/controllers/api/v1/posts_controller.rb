@@ -23,6 +23,8 @@ class Api::V1::PostsController < ApiController
   def show
     current_user.mark_uped_posts!([@post])
     
+    sleep(4)
+    
     render status: 200,
            json: @post
   end

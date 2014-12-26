@@ -86,7 +86,7 @@ class Notifications
     title = "new comment"
     summary = "#{current_user_name} commented on related post"
     extended_text = "#{current_user_name} - #{comment_body}"
-    
+     
     data = {
       notification_type: args[0],
       title: title,
@@ -112,8 +112,9 @@ class Notifications
     notif_liked = GCM::Notification.new(dest_liked.map(&:token), data)
     
     post_data[:liked] = false
-    data[:post] = post_data.values
-    notif_unliked = GCM::Notification.new(dest_unliked.map(&:token), data)
+    data_unliked = data.dup
+    data_unliked[:post] = post_data.values
+    notif_unliked = GCM::Notification.new(dest_unliked.map(&:token), data_unliked)
     
     notifications = []
     notifications << notif_liked unless dest_liked.empty?

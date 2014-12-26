@@ -50,6 +50,12 @@ class Notifications
     GCM.send_notification(destinations, data)
   end
   
+  # A lot of work is done here to figure out who liked the post and who didn't
+  # So that the proper data gets sent to their phone
+  # This is important because when some clicks on the notification
+  # in Android, we don't request the Post, we just load it from the data,
+  # which is how it gets the post data from the feed.
+  # Just makes life easier on the android side.
   def send_comment_created_notification(args)
     
     current_user_id   = args[1]
@@ -57,16 +63,25 @@ class Notifications
     comment_post_id   = args[3]
     comment_body      = args[4]
     
-    post = Post.find(comment_post_id)
+    post = Post.eager_load(:user, :network).find(comment_post_id)
     return unless post
     
     user_ids = post.comments.where.not(user_id: current_user_id).map(&:user_id)
     user_ids << post.user_id unless post.user_id == current_user_id
     user_ids.uniq!
     
-    destinations = Device.where(user_id: user_ids).map(&:token)
+    # Array of user_ids that liked post
+    all_users_who_liked_post = ActsAsVotable::Vote.where(
+    voter_type: User, votable_id: post.id, votable_type: Post, vote_scope: nil,
+    vote_flag: true).pluck(:voter_id)
     
-    return if destinations.empty?
+    # Send notifications with liked post to dest_liked.
+    # Send notifications with unliked post to dest_unliked.
+    dest_liked, dest_unliked = Device.where(user_id: user_ids).partition do |device|
+      all_users_who_liked_post.include? device.user_id
+    end
+    
+    return if dest_liked.empty? && dest_unliked.empty?
     
     title = "new comment"
     summary = "#{current_user_name} commented on related post"
@@ -79,10 +94,32 @@ class Notifications
       extended_text: extended_text,
       commenter: current_user_name,
       comment_body: comment_body,
-      post_id: post.external_id
+    }
+
+    post_data = {
+      external_id: post.external_id,
+      user_name: post.user.name,
+      body: post.body,
+      network_external_id: post.network.external_id,
+      network_name: post.network.name,
+      comments_count: post.comments_count,
+      votes_up: post.cached_votes_up,
+      liked: true,
+      created_at: post.created_at
     }
     
-    GCM.send_notification(destinations, data)
+    data[:post] = post_data.values
+    notif_liked = GCM::Notification.new(dest_liked.map(&:token), data)
+    
+    post_data[:liked] = false
+    data[:post] = post_data.values
+    notif_unliked = GCM::Notification.new(dest_unliked.map(&:token), data)
+    
+    notifications = []
+    notifications << notif_liked unless dest_liked.empty?
+    notifications << notif_unliked unless dest_unliked.empty?
+    
+    GCM.send_notifications(notifications)
   end
   
   def send_post_liked_notification(args)

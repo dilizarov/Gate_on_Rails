@@ -5,7 +5,6 @@ class ApiController < ApplicationController
   rescue_from CanCan::AccessDenied do |exception|
     render status: :unauthorized,
            json: { errors: [ "Gatekeeper, you are not authorized to perform this action." ] }
-
   end
   
   rescue_from ActiveRecord::RecordNotFound do |exception|

@@ -181,7 +181,7 @@ class Notifications
     comment_user_id   = args[4]
     post_id           = args[5]
     
-    post.eager_load(:user, :network).find(post_id)
+    post = Post.eager_load(:user, :network).find(post_id)
     return if comment_user_id == current_user_id
     
     destinations = Device.where(user_id: comment_user_id).map(&:token)

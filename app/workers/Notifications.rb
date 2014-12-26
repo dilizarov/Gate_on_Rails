@@ -64,7 +64,6 @@ class Notifications
     comment_body      = args[4]
     
     post = Post.eager_load(:user, :network).find(comment_post_id)
-    return unless post
     
     user_ids = post.comments.where.not(user_id: current_user_id).map(&:user_id)
     user_ids << post.user_id unless post.user_id == current_user_id
@@ -80,7 +79,7 @@ class Notifications
     dest_liked, dest_unliked = Device.where(user_id: user_ids).partition do |device|
       all_users_who_liked_post.include? device.user_id
     end
-    
+      
     return if dest_liked.empty? && dest_unliked.empty?
     
     title = "new comment"
@@ -111,6 +110,9 @@ class Notifications
     data[:post] = post_data.values
     notif_liked = GCM::Notification.new(dest_liked.map(&:token), data)
     
+    # You have to dup data, because GCM::Notification keeps a reference
+    # and if we change data[:post] here, the above changes meaning all this
+    # work is for naught.
     post_data[:liked] = false
     data_unliked = data.dup
     data_unliked[:post] = post_data.values
@@ -128,21 +130,46 @@ class Notifications
     current_user_id   = args[1]
     current_user_name = args[2]
     post_user_id      = args[3]
+    post_id           = args[4]
     
     return if post_user_id == current_user_id
+    
+    post = Post.eager_load(:user, :network).find(post_id)
     
     destinations = Device.where(user_id: post_user_id).map(&:token)
     
     return if destinations.empty?
     
-    message = "#{current_user_name} just liked your post"
-    
+    title = "new like"
+    summary = "#{current_user_name} liked your post"
+    extended_text = "#{current_user_name} liked your post - #{post.body}"
+        
     data = {
       notification_type: args[0],
-      message: message,
+      title: title,
+      summary: summary,
+      extended_text: extended_text,
       liker: current_user_name
     }
     
+    liked_post = ActsAsVotable::Vote.where(
+    voter_type: User, voter_id: post_user_id, votable_type: Post, votable_id: post.id,
+    vote_scope: nil, vote_flag: true).count > 0
+    
+    post_data = {
+      external_id: post.external_id,
+      user_name: post.user.name,
+      body: post.body,
+      network_external_id: post.network.external_id,
+      network_name: post.network.name,
+      comments_count: post.comments_count,
+      votes_up: post.cached_votes_up,
+      liked: liked_post,
+      created_at: post.created_at
+    }
+    
+    data[:post] = post_data.values
+        
     GCM.send_notification(destinations, data)
   end
   
@@ -150,22 +177,47 @@ class Notifications
     
     current_user_id   = args[1]
     current_user_name = args[2]
-    comment_user_id   = args[3]
+    comment_body      = args[3]
+    comment_user_id   = args[4]
+    post_id           = args[5]
     
+    post.eager_load(:user, :network).find(post_id)
     return if comment_user_id == current_user_id
     
     destinations = Device.where(user_id: comment_user_id).map(&:token)
     
     return if destinations.empty?
     
-    message = "#{current_user_name} just liked your comment"
-    
+    title = "new like"
+    summary = "#{current_user_name} liked your comment"
+    extended_text = "#{current_user_name} liked your comment - #{comment_body}"
+        
     data = {
       notification_type: args[0],
-      message: message,
+      title: title,
+      summary: summary,
+      extended_text: extended_text,
       liker: current_user_name
     }
     
+    liked_post = ActsAsVotable::Vote.where(
+    voter_type: User, voter_id: comment_user_id, votable_type: Post, votable_id: post.id,
+    vote_scope: nil, vote_flag: true).count > 0
+    
+    post_data = {
+      external_id: post.external_id,
+      user_name: post.user.name,
+      body: post.body,
+      network_external_id: post.network.external_id,
+      network_name: post.network.name,
+      comments_count: post.comments_count,
+      votes_up: post.cached_votes_up,
+      liked: liked_post,
+      created_at: post.created_at
+    }
+    
+    data[:post] = post_data.values
+        
     GCM.send_notification(destinations, data)
   end
 end

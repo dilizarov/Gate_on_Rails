@@ -73,7 +73,8 @@ class Api::V1::PostsController < ApiController
       Notifications.perform_async(POST_LIKED_NOTIFICATION,
                                   current_user.id,
                                   current_user.name,
-                                  @post.user_id)
+                                  @post.user_id,
+                                  @post.id)
     end
     
     head :no_content

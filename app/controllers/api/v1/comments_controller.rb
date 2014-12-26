@@ -45,7 +45,9 @@ class Api::V1::CommentsController < ApiController
       Notifications.perform_async(COMMENT_LIKED_NOTIFICATION,
                                   current_user.id,
                                   current_user.name,
-                                  @comment.user_id)
+                                  @comment.body,
+                                  @comment.user_id,
+                                  @comment.post_id)
     end
     
     head :no_content

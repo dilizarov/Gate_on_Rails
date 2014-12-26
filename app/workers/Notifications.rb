@@ -35,13 +35,14 @@ class Notifications
 
     return if destinations.empty?
     
-    summary = "#{current_user_name} just posted"
+    title = "Gate"
+    summary = "#{current_user_name} posted in #{network.name}"
     extended_text = "#{current_user_name} - #{post_body}"
     
     data = {
       notification_type: args[0],
+      title: title,
       summary: summary,
-      gate: network.name,
       extended_text: extended_text,
       poster: current_user_name,
       post_body: post_body
@@ -82,8 +83,8 @@ class Notifications
       
     return if dest_liked.empty? && dest_unliked.empty?
     
-    title = "new comment"
-    summary = "#{current_user_name} commented on related post"
+    title = "Gate"
+    summary = "#{current_user_name} commented on a post"
     extended_text = "#{current_user_name} - #{comment_body}"
      
     data = {
@@ -140,8 +141,8 @@ class Notifications
     
     return if destinations.empty?
     
-    title = "new like"
-    summary = "#{current_user_name} liked your post"
+    title = "Gate"
+    summary = "#{current_user_name} liked your post."
     extended_text = "#{current_user_name} liked your post - #{post.body}"
         
     data = {
@@ -188,8 +189,8 @@ class Notifications
     
     return if destinations.empty?
     
-    title = "new like"
-    summary = "#{current_user_name} liked your comment"
+    title = "Gate"
+    summary = "#{current_user_name} liked your comment."
     extended_text = "#{current_user_name} liked your comment - #{comment_body}"
         
     data = {

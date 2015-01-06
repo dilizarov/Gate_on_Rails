@@ -37,7 +37,7 @@ class Notifications
     
     title = "Gate"
     summary = "#{current_user_name} posted in #{network.name}"
-    extended_text = "#{current_user_name} - #{post_body}"
+    extended_text = "#{current_user_name} posted #{post_body}"
     
     data = {
       notification_type: args[0],
@@ -85,7 +85,7 @@ class Notifications
     
     title = "Gate"
     summary = "#{current_user_name} commented on a post"
-    extended_text = "#{current_user_name} - #{comment_body}"
+    extended_text = "#{current_user_name} commented #{comment_body}"
      
     data = {
       notification_type: args[0],

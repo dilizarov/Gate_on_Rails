@@ -68,7 +68,13 @@ class Notifications
     
     user_ids = post.comments.where.not(user_id: current_user_id).map(&:user_id)
     user_ids << post.user_id unless post.user_id == current_user_id
-    user_ids.uniq!
+    
+    # Users being notified need to be in the Gate.
+    # This is for cases when someone leaves a Gate.
+    user_ids = UserNetwork.where(user_id: user_ids,
+                                 network_id: post.network_id)
+                          .map(&:user_id)
+                          .uniq
     
     # Array of user_ids that liked post
     all_users_who_liked_post = ActsAsVotable::Vote.where(
@@ -137,6 +143,10 @@ class Notifications
     
     post = Post.eager_load(:user, :network).find(post_id)
     
+    # User being notified needs to be in the Gate.
+    # This is for cases when someone leaves a Gate.
+    return if UserNetwork.find_by(user_id: post_user_id, network_id: post.network.id).nil?
+    
     destinations = Device.where(user_id: post_user_id).map(&:token)
     
     return if destinations.empty?
@@ -182,8 +192,13 @@ class Notifications
     comment_user_id   = args[4]
     post_id           = args[5]
     
-    post = Post.eager_load(:user, :network).find(post_id)
     return if comment_user_id == current_user_id
+    
+    post = Post.eager_load(:user, :network).find(post_id)
+    
+    # User being notified needs to be in the Gate.
+    # This is for cases when someone leaves a Gate.
+    return if UserNetwork.find_by(user_id: comment_user_id, network_id: post.network.id).nil?
     
     destinations = Device.where(user_id: comment_user_id).map(&:token)
     

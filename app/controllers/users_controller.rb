@@ -11,7 +11,8 @@ class UsersController < ApplicationController
       
       head :no_content
     else
-      head :not_found
+      render status: :not_found,
+             json: { errors: [ "Email not registered" ] }
     end
   end
   

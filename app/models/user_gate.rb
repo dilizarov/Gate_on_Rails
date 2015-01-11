@@ -1,5 +1,5 @@
 class UserGate < ActiveRecord::Base
-  belongs_to :gate, inverse_of: :user_gates
+  belongs_to :gate,    inverse_of: :user_gates
   belongs_to :user,    inverse_of: :user_gates
   
   before_destroy :destroy_keys_associated_with_user_and_gate!

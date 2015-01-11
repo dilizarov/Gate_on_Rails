@@ -6,7 +6,7 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module Gate
+module GateOnRails
   class Application < Rails::Application
   end
 end

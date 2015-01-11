@@ -1,18 +1,18 @@
 class Api::V1::GatekeepersController < ApiController
   
   def grant_access
-     @networks = Network.where(external_id: params[:network_ids])
+     @gates = Gate.where(external_id: params[:gate_ids])
      gatekeeper = User.find_by(external_id: params[:gatekeeper_id])
-     throw ActiveRecord::RecordNotFound if @networks.length != params[:network_ids].length || gatekeeper.nil?
-     throw CanCan::AccessDenied unless gatekeeper.in_networks? @networks
+     throw ActiveRecord::RecordNotFound if @gates.length != params[:gate_ids].length || gatekeeper.nil?
+     throw CanCan::AccessDenied unless gatekeeper.in_gates? @gates
      
-     gatekeeper.grant_access(@networks, current_user)
+     gatekeeper.grant_access(@gates, current_user)
      
-     @networks = current_user.networks_with_users_count(includes: :creator).select { |network| @networks.include? network }
+     @gates = current_user.gates_with_users_count(includes: :creator).select { |gate| @gates.include? gate }
      
      render status: 200,
-            json: @networks,
-            each_serializer: NetworkSerializer,
-            root: "networks"
+            json: @gates,
+            each_serializer: GateSerializer,
+            root: "gates"
   end
 end

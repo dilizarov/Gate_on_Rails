@@ -7,13 +7,13 @@ class Key < ActiveRecord::Base
   
   # This is not confusing at all. :)
   attr_encrypted :key,      key: ENV['KEY_KEY']
-  attr_encrypted :networks, key: ENV['NETWORKS_KEY'], marshal: true
+  attr_encrypted :gates, key: ENV['GATES_KEY'], marshal: true
 
-  before_create :swap_network_external_ids_for_network_ids!
+  before_create :swap_gate_external_ids_for_gate_ids!
   before_save :generate_key!
 
   validates :gatekeeper_id, presence: true
-  validates :networks,      presence: true
+  validates :gates,      presence: true
   
   belongs_to :gatekeeper,
              class_name: "User",
@@ -35,36 +35,36 @@ class Key < ActiveRecord::Base
     end
   end
   
-  def swap_network_external_ids_for_network_ids!
-    network_external_ids = self.networks
-    network_ids = Network.where(external_id: network_external_ids).to_a.map(&:id)
-    self.networks = network_ids
+  def swap_gate_external_ids_for_gate_ids!
+    gate_external_ids = self.gates
+    gate_ids = Gate.where(external_id: gate_external_ids).to_a.map(&:id)
+    self.gates = gate_ids
   end
   
   def process(current_user)
     
-    # Filter out networks that current_user is already part of.
-    networks_to_be_added = self.networks - current_user.networks.map(&:id)
+    # Filter out gates that current_user is already part of.
+    gates_to_be_added = self.gates - current_user.gates.map(&:id)
     
-    user_networks = networks_to_be_added.map do |network_id| 
+    user_gates = gates_to_be_added.map do |gate_id| 
                       # Not a N + 1 query problem ;).
-                      UserNetwork.new(user_id:       current_user.id,
-                                      network_id:    network_id,
+                      UserGate.new(user_id:       current_user.id,
+                                      gate_id:    gate_id,
                                       gatekeeper_id: self.gatekeeper_id)
                     end
         
     # I don't imagine many, if any, keys that will have very large amounts of
-    # networks. Hence, the array isn't very large. Because of this, we don't
+    # gates. Hence, the array isn't very large. Because of this, we don't
     # need the efficiency (potentially 70x+ faster) of a raw INSERT INTO sql
     # query. If we find the need or want to do so, we could go forth and do
     # that. As it stands, I don't think we need it, and this import should
     # suffice.
     
-    UserNetwork.import(user_networks)
+    UserGate.import(user_gates)
     
     self.touch
     
-    new_networks = Network.where(id: networks_to_be_added).to_a
+    new_gates = Gate.where(id: gates_to_be_added).to_a
   end             
   
 end

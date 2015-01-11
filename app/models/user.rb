@@ -13,58 +13,58 @@ class User < ActiveRecord::Base
   
   validates :name, presence: true
   
-  has_many :networks,
-           -> { order 'LOWER(networks.name)' },
-           through: :user_networks
+  has_many :gates,
+           -> { order 'LOWER(gates.name)' },
+           through: :user_gates
   
-  has_many :user_networks,
-           class_name: "UserNetwork"
+  has_many :user_gates,
+           class_name: "UserGate"
            
   has_many :keys,
            foreign_key: :gatekeeper_id
   
   has_many :feed_posts,
-           through: :networks,
+           through: :gates,
            source: :posts
   
   has_many :posts
   has_many :comments
   has_many :devices
   
-  def networks_with_users_count(options = {})
-    networks = self.networks
+  def gates_with_users_count(options = {})
+    gates = self.gates
     
-    networks = networks.includes(:creator) if options[:includes] == :creator
+    gates = gates.includes(:creator) if options[:includes] == :creator
     
-    # Gets the number of users in each network that the user is in
-    # { 24 => 11, 3 => 14, 1 => 1, 19 => 44} where the key is the network id
+    # Gets the number of users in each gate that the user is in
+    # { 24 => 11, 3 => 14, 1 => 1, 19 => 44} where the key is the gate id
     # and the value is the number of users.
   
-    num_of_users_per_user_network = UserNetwork.
-         joins("INNER JOIN user_networks AS un ON user_networks.network_id = un.network_id").
+    num_of_users_per_user_gate = UserGate.
+         joins("INNER JOIN user_gates AS un ON user_gates.gate_id = un.gate_id").
          where("un.user_id = ?", self.id).
-         group("user_networks.network_id").
-         count("user_networks.user_id")
+         group("user_gates.gate_id").
+         count("user_gates.user_id")
   
-    networks.each do |network|
-      network.users_count = num_of_users_per_user_network[network.id]
+    gates.each do |gate|
+      gate.users_count = num_of_users_per_user_gate[gate.id]
     end
     
-    networks
+    gates
   end
   
-  def grant_access(networks, user)
+  def grant_access(gates, user)
     
-    # Filter out networks that other_user is already part of.
-    networks_to_be_added = networks.map(&:id) - user.networks.map(&:id)
+    # Filter out gates that other_user is already part of.
+    gates_to_be_added = gates.map(&:id) - user.gates.map(&:id)
     
-    user_networks = networks_to_be_added.map do |network_id|
-                      UserNetwork.new(user_id: user.id,
-                                      network_id: network_id,
+    user_gates = gates_to_be_added.map do |gate_id|
+                      UserGate.new(user_id: user.id,
+                                      gate_id: gate_id,
                                       gatekeeper_id: self.id)
                     end
     
-    UserNetwork.import(user_networks)
+    UserGate.import(user_gates)
   end
   
   def mark_uped_posts!(posts)
@@ -77,20 +77,20 @@ class User < ActiveRecord::Base
     comments.each { |comment| comment.uped = uped_comment_ids.include?(comment.id) }
   end
   
-  # Takes a Network object or network id.
-  def in_network?(network)
-    network_id = Network === network ? network.id : network
-    !!UserNetwork.find_by(user_id: self.id, network_id: network_id)
+  # Takes a Gate object or gate id.
+  def in_gate?(gate)
+    gate_id = Gate === gate ? gate.id : gate
+    !!UserGate.find_by(user_id: self.id, gate_id: gate_id)
   end
   
-  # Takes an array of Network objects or network ids.
+  # Takes an array of Gate objects or gate ids.
   # Implies based on type of first element.
-  def in_networks?(networks)
-    network_ids = Network === networks.first ? networks.map(&:id) : networks
-    valid_networks = UserNetwork.where(user_id: self.id, 
-                                       network_id: network_ids).pluck(:network_id)
+  def in_gates?(gates)
+    gate_ids = Gate === gates.first ? gates.map(&:id) : gates
+    valid_gates = UserGate.where(user_id: self.id, 
+                                       gate_id: gate_ids).pluck(:gate_id)
                                        
-    (valid_networks & network_ids).length == network_ids.length
+    (valid_gates & gate_ids).length == gate_ids.length
   end
   
   def owns_post?(post)

@@ -1,13 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  external_id: 
   user_id: 1
   gate_id: 1
-  body: MyText
+  gatekeeper_id: 1
+  anonymous: false
 
 two:
-  external_id: 
   user_id: 1
   gate_id: 1
-  body: MyText
+  gatekeeper_id: 1
+  anonymous: false

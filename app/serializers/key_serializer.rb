@@ -1,8 +1,8 @@
 class KeySerializer < ActiveModel::Serializer
-  attributes :key, :networks
+  attributes :key, :gates
   
-  def networks
-    keys_networks = Network.where(id: object.networks).to_a
-    ActiveModel::ArraySerializer.new(keys_networks, each_serializer: SimpleNetworkSerializer)
+  def gates
+    keys_gates = Gate.where(id: object.gates).to_a
+    ActiveModel::ArraySerializer.new(keys_gates, each_serializer: SimpleGateSerializer)
   end
 end

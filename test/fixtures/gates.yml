@@ -1,13 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  name: MyString
+  creator_id: 1
   external_id: 
-  user_id: 1
-  gate_id: 1
-  body: MyText
 
 two:
+  name: MyString
+  creator_id: 1
   external_id: 
-  user_id: 1
-  gate_id: 1
-  body: MyText

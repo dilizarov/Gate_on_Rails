@@ -25,18 +25,18 @@ class Notifications
     
     current_user_id   = args[1]
     current_user_name = args[2]
-    post_network_id   = args[3]
+    post_gate_id      = args[3]
     post_body         = args[4]
     
-    network = Network.find(post_network_id)
-    return unless network
+    gate = Gate.find(post_gate_id)
+    return unless gate
     
-    destinations = network.devices.where('users.id != ?', current_user_id).map(&:token)
+    destinations = gate.devices.where('users.id != ?', current_user_id).map(&:token)
 
     return if destinations.empty?
     
     title = "Gate"
-    summary = "#{current_user_name} posted in #{network.name}"
+    summary = "#{current_user_name} posted in #{gate.name}"
     extended_text = "#{current_user_name} posted #{post_body}"
     
     data = {
@@ -64,15 +64,15 @@ class Notifications
     comment_post_id   = args[3]
     comment_body      = args[4]
     
-    post = Post.eager_load(:user, :network).find(comment_post_id)
+    post = Post.eager_load(:user, :gate).find(comment_post_id)
     
     user_ids = post.comments.where.not(user_id: current_user_id).map(&:user_id)
     user_ids << post.user_id unless post.user_id == current_user_id
     
     # Users being notified need to be in the Gate.
     # This is for cases when someone leaves a Gate.
-    user_ids = UserNetwork.where(user_id: user_ids,
-                                 network_id: post.network_id)
+    user_ids = UserGate.where(user_id: user_ids,
+                                 gate_id: post.gate_id)
                           .map(&:user_id)
                           .uniq
     
@@ -106,8 +106,8 @@ class Notifications
       external_id: post.external_id,
       user_name: post.user.name,
       body: post.body,
-      network_external_id: post.network.external_id,
-      network_name: post.network.name,
+      gate_external_id: post.gate.external_id,
+      gate_name: post.gate.name,
       comments_count: post.comments_count,
       votes_up: post.cached_votes_up,
       liked: true,
@@ -141,11 +141,11 @@ class Notifications
     
     return if post_user_id == current_user_id
     
-    post = Post.eager_load(:user, :network).find(post_id)
+    post = Post.eager_load(:user, :gate).find(post_id)
     
     # User being notified needs to be in the Gate.
     # This is for cases when someone leaves a Gate.
-    return if UserNetwork.find_by(user_id: post_user_id, network_id: post.network.id).nil?
+    return if UserGate.find_by(user_id: post_user_id, gate_id: post.gate.id).nil?
     
     destinations = Device.where(user_id: post_user_id).map(&:token)
     
@@ -171,8 +171,8 @@ class Notifications
       external_id: post.external_id,
       user_name: post.user.name,
       body: post.body,
-      network_external_id: post.network.external_id,
-      network_name: post.network.name,
+      gate_external_id: post.gate.external_id,
+      gate_name: post.gate.name,
       comments_count: post.comments_count,
       votes_up: post.cached_votes_up,
       liked: liked_post,
@@ -194,11 +194,11 @@ class Notifications
     
     return if comment_user_id == current_user_id
     
-    post = Post.eager_load(:user, :network).find(post_id)
+    post = Post.eager_load(:user, :gate).find(post_id)
     
     # User being notified needs to be in the Gate.
     # This is for cases when someone leaves a Gate.
-    return if UserNetwork.find_by(user_id: comment_user_id, network_id: post.network.id).nil?
+    return if UserGate.find_by(user_id: comment_user_id, gate_id: post.gate.id).nil?
     
     destinations = Device.where(user_id: comment_user_id).map(&:token)
     
@@ -224,8 +224,8 @@ class Notifications
       external_id: post.external_id,
       user_name: post.user.name,
       body: post.body,
-      network_external_id: post.network.external_id,
-      network_name: post.network.name,
+      gate_external_id: post.gate.external_id,
+      gate_name: post.gate.name,
       comments_count: post.comments_count,
       votes_up: post.cached_votes_up,
       liked: liked_post,

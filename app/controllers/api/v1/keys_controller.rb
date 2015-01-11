@@ -33,11 +33,11 @@ class Api::V1::KeysController < ApiController
   # ActionController::Base has a method named process.
   def prokess
     if @key.active?
-      @new_networks = @key.process(current_user)
+      @new_gates = @key.process(current_user)
       
       render status: 200,
-             json: @new_networks, 
-             each_serializer: SimpleNetworkSerializer,
+             json: @new_gates, 
+             each_serializer: SimpleGateSerializer,
              meta: { success: true,
                      info: "Key processed." }
     else
@@ -51,7 +51,7 @@ class Api::V1::KeysController < ApiController
   def key_params
     params.
       require(:key).
-      permit(networks: []).
+      permit(gates: []).
       merge(gatekeeper_id: current_user.id)
   end
   

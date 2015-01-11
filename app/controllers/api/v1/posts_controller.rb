@@ -1,13 +1,13 @@
 class Api::V1::PostsController < ApiController
-  load_and_authorize_resource :network, find_by: :external_id, except: [:destroy, :aggregate, :up, :show]
-  load_resource :post, :through => :network, only: [:create]
+  load_and_authorize_resource :gate, find_by: :external_id, except: [:destroy, :aggregate, :up, :show]
+  load_resource :post, :through => :gate, only: [:create]
   
   load_resource find_by: :external_id, except: [:create, :aggregate]
   
   authorize_resource except: [:index, :aggregate]
   
   def index
-    @posts = @network.posts.
+    @posts = @gate.posts.
                       includes(:user).
                       created_before(time_buffer).
                       page(page).
@@ -33,7 +33,7 @@ class Api::V1::PostsController < ApiController
       Notifications.perform_async(POST_CREATED_NOTIFICATION,
                                   current_user.id,
                                   current_user.name,
-                                  @post.network_id,
+                                  @post.gate_id,
                                   @post.body)
                     
       render status: 200,
@@ -53,7 +53,7 @@ class Api::V1::PostsController < ApiController
     @posts = current_user.feed_posts.
                          reorder(created_at: :desc).
                          created_before(time_buffer).
-                         includes(:user, :network).
+                         includes(:user, :gate).
                          page(page).
                          per(15).
                          to_a

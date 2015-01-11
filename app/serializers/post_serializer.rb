@@ -12,5 +12,5 @@ class PostSerializer < ActiveModel::Serializer
   end
   
   has_one :user
-  has_one :network, serializer: SimpleNetworkSerializer
+  has_one :gate, serializer: SimpleGateSerializer
 end

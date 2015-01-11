@@ -3,13 +3,13 @@
 one:
   encrypted_key: MyString
   gatekeeper_id: 1
-  encrypted_networks: MyText
+  encrypted_gates: MyText
   number_of_uses: 1
   external_id: 
 
 two:
   encrypted_key: MyString
   gatekeeper_id: 1
-  encrypted_networks: MyText
+  encrypted_gates: MyText
   number_of_uses: 1
   external_id: 

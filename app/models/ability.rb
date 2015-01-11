@@ -2,12 +2,12 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    can [:read, :leave], Network do |network|
-      user.in_network? network
+    can [:read, :leave], Gate do |gate|
+      user.in_gate? gate
     end
       
     can [:read, :create, :up], Post do |post|
-      user.in_network? post.network_id
+      user.in_gate? post.gate_id
     end
     
     can :destroy, Post do |post|
@@ -15,7 +15,7 @@ class Ability
     end
     
     can [:create, :up], Comment do |comment|
-      user.in_network? comment.post.network_id
+      user.in_gate? comment.post.gate_id
     end
     
     can :destroy, Comment do |comment|
@@ -23,7 +23,7 @@ class Ability
     end
     
     can :create, Key do |key|
-      user.in_networks? key.networks
+      user.in_gates? key.gates
     end
     
     can :destroy, Key do |key|

@@ -6,7 +6,17 @@ module SessionHelper
     
     return nil unless @current_user && Devise.secure_compare(@current_user.authentication_token,
                                                              params[:auth_token])
-                                                                               
+                                               
+            #
+    # @current_user = User.find_by(external_id: params[:user_id])
+    # auth_tokens = @current_user.devices.map(&:authentication_token)
+    # auth_tokens.each do |auth_token|
+    #   if Devise.secure_compare(auth_token, params[:auth_token])
+    #     return @current_user
+    #   end
+    # end
+    #
+    # nil
     @current_user    
   end
   

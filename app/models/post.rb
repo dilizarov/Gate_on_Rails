@@ -8,7 +8,7 @@ class Post < ActiveRecord::Base
   scope :created_before, ->(time = nil) { where('posts.created_at < ?', time) if time }
   
   validates :user_id,     presence: true
-  validates :gate_id,  presence: true
+  validates :gate_id,     presence: true
   validates :body,        presence: true,
                           length: { maximum: 500 }
   

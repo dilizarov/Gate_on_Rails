@@ -1,6 +1,7 @@
 class Api::V1::GatesController < ApiController
   load_resource find_by: :external_id, except: [:index]
   authorize_resource only: [:leave]
+  
   def index
     @gates = current_user.gates_with_users_count(includes: :creator)
     

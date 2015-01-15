@@ -3,13 +3,13 @@ class User < ActiveRecord::Base
   
   acts_as_voter
   
+  # Used in CurrentUser serializer
+  attr_reader :auth_token
+  
   # Others available are:
   # :lockable, :timeoutable, :confirmable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable,
-         :token_authenticatable
-         
-  before_save :ensure_authentication_token
+         :recoverable, :rememberable, :trackable, :validatable
   
   validates :name, presence: true
   
@@ -30,6 +30,7 @@ class User < ActiveRecord::Base
   has_many :posts
   has_many :comments
   has_many :devices
+  has_many :authentication_tokens
   
   def gates_with_users_count(options = {})
     gates = self.gates
@@ -103,6 +104,14 @@ class User < ActiveRecord::Base
   
   def owns_key?(key)
     self.id == key.gatekeeper_id
+  end
+  
+  def login!
+    self.auth_token = AuthenticationToken.create(user_id: self.id).token
+  end
+  
+  def logout!(auth_token)
+    AuthenticationToken.where(token: auth_token).first.destroy
   end
   
   def sync_device(params)

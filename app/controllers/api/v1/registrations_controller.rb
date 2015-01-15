@@ -8,7 +8,7 @@ class Api::V1::RegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params)
     
     if resource.save
-      login!(resource)
+      resource.login!
       resource.sync_device(params[:device]) if params[:device]
       
       render status: 200,

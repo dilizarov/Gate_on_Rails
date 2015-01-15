@@ -5,7 +5,7 @@ class Api::V1::SessionsController < ApiController
   def create
     @user = User.find_by(email: params[:user][:email])
     if @user && @user.valid_password?(params[:user][:password])
-      login!(@user)
+      @user.login!
       @user.sync_device(params[:device]) if params[:device]
     
       render status: 200,
@@ -22,7 +22,7 @@ class Api::V1::SessionsController < ApiController
   
   def destroy
     current_user.unsync_device(params[:device]) if params[:device]
-    logout!(current_user)
+    current_user.logout!(params[:auth_token])
     
     head :no_content
   end

@@ -5,7 +5,6 @@ gem 'pg', '0.17.1'
 
 # Authentication Solution
 gem 'devise', '3.3.0'
-gem 'devise-token_authenticatable', '0.2.0'
 
 # Authorization Solution
 gem 'cancancan', '~> 1.9'

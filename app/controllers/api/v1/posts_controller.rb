@@ -1,11 +1,11 @@
-class Api::V1::PostsController < ApiController
+class Api::V1::PostsController < ApplicationController
   load_and_authorize_resource :gate, find_by: :external_id, except: [:destroy, :aggregate, :up, :show]
   load_resource :post, :through => :gate, only: [:create]
-  
+
   load_resource find_by: :external_id, except: [:create, :aggregate]
-  
+
   authorize_resource except: [:index, :aggregate]
-  
+
   def index
     @posts = @gate.posts.
                       includes(:user).

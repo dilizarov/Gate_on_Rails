@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   acts_as_voter
   
   # Used in CurrentUser serializer
-  attr_reader :auth_token
+  attr_accessor :auth_token
   
   # Others available are:
   # :lockable, :timeoutable, :confirmable and :omniauthable

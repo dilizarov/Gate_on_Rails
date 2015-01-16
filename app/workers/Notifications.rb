@@ -37,7 +37,7 @@ class Notifications
     
     title = "Gate"
     summary = "#{current_user_name} posted in #{gate.name}"
-    extended_text = "#{current_user_name} posted #{post_body}"
+    extended_text = "#{current_user_name} posted: \n\n #{post_body}"
     
     data = {
       notification_type: args[0],
@@ -91,7 +91,7 @@ class Notifications
     
     title = "Gate"
     summary = "#{current_user_name} commented on a post"
-    extended_text = "#{current_user_name} commented #{comment_body}"
+    extended_text = "#{current_user_name} commented: \n\n #{comment_body}"
      
     data = {
       notification_type: args[0],
@@ -152,8 +152,8 @@ class Notifications
     return if destinations.empty?
     
     title = "Gate"
-    summary = "#{current_user_name} liked your post."
-    extended_text = "#{current_user_name} liked your post - #{post.body}"
+    summary = "#{current_user_name} likes your post."
+    extended_text = "#{current_user_name} likes your post: \n\n #{post.body}"
         
     data = {
       notification_type: args[0],
@@ -205,8 +205,8 @@ class Notifications
     return if destinations.empty?
     
     title = "Gate"
-    summary = "#{current_user_name} liked your comment."
-    extended_text = "#{current_user_name} liked your comment - #{comment_body}"
+    summary = "#{current_user_name} likes your comment."
+    extended_text = "#{current_user_name} likes your comment: \n\n #{comment_body}"
         
     data = {
       notification_type: args[0],

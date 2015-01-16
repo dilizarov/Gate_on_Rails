@@ -7,7 +7,7 @@ Rails.application.routes.draw do
       devise_for :users, only: :registrations, path: '/registrations'
       
       post 'sessions'             => 'sessions#create',      as: 'login'
-      post 'sessions/logout'      => 'sessions#destroy',     as: 'logout' #Yup, it's a post. Volley for Android acts up on delete & at this point, I just want to release this.
+      post 'sessions/logout'      => 'sessions#destroy',     as: 'logout'
       
       resources :gates, only: [:create, :index, :show] do
         member do

@@ -1,4 +1,4 @@
-class Api::V1::PostsController < ApplicationController
+class Api::V1::PostsController < ApiController
   load_and_authorize_resource :gate, find_by: :external_id, except: [:destroy, :aggregate, :up, :show]
   load_resource :post, :through => :gate, only: [:create]
 

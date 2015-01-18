@@ -49,6 +49,9 @@ class Api::V1::KeysController < ApiController
   private
   
   def key_params
+    p params
+    p params[:key][:gates]
+    
     params.
       require(:key).
       permit(gates: []).

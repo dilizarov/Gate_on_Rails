@@ -14,5 +14,5 @@ class Api::V1::GatekeepersController < ApiController
             json: @gates,
             each_serializer: GateSerializer,
             root: "gates"
-  end
+  end  
 end

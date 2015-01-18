@@ -152,7 +152,7 @@ class Notifications
     return if destinations.empty?
     
     title = "Gate"
-    summary = "#{current_user_name} likes your post."
+    summary = "#{current_user_name} likes your post"
     extended_text = "#{current_user_name} likes your post: \n\n #{post.body}"
         
     data = {
@@ -205,7 +205,7 @@ class Notifications
     return if destinations.empty?
     
     title = "Gate"
-    summary = "#{current_user_name} likes your comment."
+    summary = "#{current_user_name} likes your comment"
     extended_text = "#{current_user_name} likes your comment: \n\n #{comment_body}"
         
     data = {

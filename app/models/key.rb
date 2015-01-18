@@ -6,14 +6,13 @@ class Key < ActiveRecord::Base
   scope :active,  -> { where('updated_at >= ?', EXPIRATION_MARK) }
   
   # This is not confusing at all. :)
-  attr_encrypted :key,      key: ENV['KEY_KEY']
-  attr_encrypted :gates, key: ENV['GATES_KEY'], marshal: true
+  attr_encrypted :key,    key: ENV['KEY_KEY']
+  attr_encrypted :gates,  key: ENV['GATES_KEY'], marshal: true
 
   before_create :swap_gate_external_ids_for_gate_ids!
-  before_save :generate_key!
+  before_create :generate_key!
 
   validates :gatekeeper_id, presence: true
-  validates :gates,      presence: true
   
   belongs_to :gatekeeper,
              class_name: "User",

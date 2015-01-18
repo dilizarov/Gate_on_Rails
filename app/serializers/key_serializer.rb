@@ -3,7 +3,7 @@ class KeySerializer < ActiveModel::Serializer
 
   def key
     # 1234567891234567 turns into 1234-5678-9123-4567 for readability
-    object.key.scan(/.{1,4}).join("-")
+    object.key.scan(/.{1,4}/).join("-")
   end
   
   def gates

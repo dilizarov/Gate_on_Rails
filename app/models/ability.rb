@@ -23,7 +23,8 @@ class Ability
     end
     
     can :create, Key do |key|
-      user.in_gates? key.gates
+      gates = Gate.where(external_id: key.gates)
+      user.in_gates? gates
     end
     
     can :destroy, Key do |key|

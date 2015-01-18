@@ -35,6 +35,9 @@ class Key < ActiveRecord::Base
   end
   
   def swap_gate_external_ids_for_gate_ids!
+    # Assume we're dealing with ids, not external_ids if the first element is an Integer
+    return if Integer === self.gates.first
+    
     gate_external_ids = self.gates
     gate_ids = Gate.where(external_id: gate_external_ids).to_a.map(&:id)
     self.gates = gate_ids

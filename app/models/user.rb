@@ -88,6 +88,7 @@ class User < ActiveRecord::Base
   # Implies based on type of first element.
   def in_gates?(gates)
     gate_ids = Gate === gates.first ? gates.map(&:id) : gates
+    
     valid_gates = UserGate.where(user_id: self.id, 
                                        gate_id: gate_ids).pluck(:gate_id)
                                        

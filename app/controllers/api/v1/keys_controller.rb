@@ -1,8 +1,8 @@
 class Api::V1::KeysController < ApiController
-  before_action :load_already_existing_key, only: [:destroy, :prokess]
+  before_action :load_already_existing_key, only: [:destroy]
   
-  load_resource except: [:index]
-  authorize_resource
+  load_resource except: [:index, :prokess]
+  authorize_resource except: [:prokess]
   
   def create
     if @key.save
@@ -32,26 +32,29 @@ class Api::V1::KeysController < ApiController
   
   # ActionController::Base has a method named process.
   def prokess
-    if @key.active?
+    @key = Key.find_by_key(params[:id])
+    
+    if @key && @key.active?
+      throw CanCan::AccessDenied if @key.gatekeeper_id == current_user.id
+      
       @new_gates = @key.process(current_user)
       
       render status: 200,
              json: @new_gates, 
              each_serializer: SimpleGateSerializer,
+             root: "gates",
              meta: { success: true,
-                     info: "Key processed." }
+                     info: "Key processed",
+                     data: { gatekeeper: @key.gatekeeper.name } }
     else
       render status: :locked,
-             json: { error: "This key doesn't unlock the gate" }
+             json: { errors: [ "This key doesn't unlock any gates" ] }
     end
   end
   
   private
   
   def key_params
-    p params
-    p params[:key][:gates]
-    
     params.
       require(:key).
       permit(gates: []).

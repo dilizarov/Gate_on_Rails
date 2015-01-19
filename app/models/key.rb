@@ -51,8 +51,8 @@ class Key < ActiveRecord::Base
     user_gates = gates_to_be_added.map do |gate_id| 
                       # Not a N + 1 query problem ;).
                       UserGate.new(user_id:       current_user.id,
-                                      gate_id:    gate_id,
-                                      gatekeeper_id: self.gatekeeper_id)
+                                   gate_id:       gate_id,
+                                   gatekeeper_id: self.gatekeeper_id)
                     end
         
     # I don't imagine many, if any, keys that will have very large amounts of

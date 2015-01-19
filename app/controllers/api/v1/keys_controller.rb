@@ -35,20 +35,23 @@ class Api::V1::KeysController < ApiController
     @key = Key.find_by_key(params[:id])
     
     if @key && @key.active?
-      rescue CanCan::AccessDenied if @key.gatekeeper_id == current_user.id
+      unless @key.gatekeeper_id == current_user.id
+        @new_gates = @key.process(current_user)
+        @new_gates = current_user.gates_with_users_count(includes: :creator).select do |gate|
+          @new_gates.include? gate
+        end
       
-      @new_gates = @key.process(current_user)
-      @new_gates = current_user.gates_with_users_count(includes: :creator).select do |gate|
-        @new_gates.include? gate
+        render status: 200,
+               json: @new_gates, 
+               each_serializer: GateSerializer,
+               root: "gates",
+               meta: { success: true,
+                       info: "Key processed",
+                       data: { gatekeeper: @key.gatekeeper.name } }
+      else
+        render status: :locked,
+               json: { errors: [ "You can't use your own key" ] }
       end
-      
-      render status: 200,
-             json: @new_gates, 
-             each_serializer: GateSerializer,
-             root: "gates",
-             meta: { success: true,
-                     info: "Key processed",
-                     data: { gatekeeper: @key.gatekeeper.name } }
     else
       render status: :locked,
              json: { errors: [ "This key doesn't unlock any gates" ] }

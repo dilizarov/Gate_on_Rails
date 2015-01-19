@@ -33,11 +33,7 @@ class User < ActiveRecord::Base
   has_many :authentication_tokens
   
   def gates_with_users_count(options = {})
-    if options[:gates]
-      gates = options[:gates]
-    else
-      gates = self.gates
-    end
+    gates = self.gates
     
     gates = gates.includes(:creator) if options[:includes] == :creator
     

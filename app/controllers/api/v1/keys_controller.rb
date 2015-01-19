@@ -38,7 +38,9 @@ class Api::V1::KeysController < ApiController
       throw CanCan::AccessDenied if @key.gatekeeper_id == current_user.id
       
       @new_gates = @key.process(current_user)
-      @new_gates = current_user.gates_with_users_count(includes: :creator, gates: @new_gates)
+      @new_gates = current_user.gates_with_users_count(includes: :creator).select do |gate|
+        @new_gates.include? gate
+      end
       
       render status: 200,
              json: @new_gates, 

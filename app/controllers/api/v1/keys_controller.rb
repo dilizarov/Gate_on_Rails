@@ -38,10 +38,11 @@ class Api::V1::KeysController < ApiController
       throw CanCan::AccessDenied if @key.gatekeeper_id == current_user.id
       
       @new_gates = @key.process(current_user)
+      @new_gates = current_user.gates_with_users_count(includes: :creator, gates: @new_gates)
       
       render status: 200,
              json: @new_gates, 
-             each_serializer: SimpleGateSerializer,
+             each_serializer: GateSerializer,
              root: "gates",
              meta: { success: true,
                      info: "Key processed",

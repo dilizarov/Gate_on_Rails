@@ -37,9 +37,9 @@ class User < ActiveRecord::Base
   def unlock_alpha_testers_gate
     # David is user 1. Alpha Testers is gate 1.
     
-    UserGate.new(user_id: self.id,
-                 gate_id: 1,
-                 gatekeeper_id: 1)
+    UserGate.create(user_id: self.id,
+                    gate_id: 1,
+                    gatekeeper_id: 1)
   end
   
   def gates_with_users_count(options = {})

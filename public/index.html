@@ -1,65 +1,378 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>We're sorry, but something went wrong (500)</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <style>
-  body {
-    background-color: #EFEFEF;
-    color: #2E2F30;
-    text-align: center;
-    font-family: arial, sans-serif;
-    margin: 0;
-  }
+<!DOCTYPE HTML>
+  <head>
+    <meta charset="utf-8" />
+    <title>Unlock Gate Today</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Roboto|Lora' rel='stylesheet' type='text/css'>
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Roboto', sans-serif;  
+        background: #181E21;
+      }
+      
+      a {
+        text-decoration: none;
+        color: #0b9ad2;
+      }
+      
+/*ANDROID DEVICE*/
+      .android-container {
+        width: 65%;
+        margin-top: -4%;
+        position: fixed;
+        left: 25%;
+        margin-left: -120px;
+        min-width: 935px;
+      }
+      .android-container img {
+        position: absolute;
+      }
+      .android-device {
+        width: 100%;
+        z-index: 20;
+      }
+      .android-device-whitecover {
+        width: 100%;
+        opacity: 0.3;
+        z-index: 9;
+      }
+      .device-logo {
+        width: 100%;
+        z-index: 9;
+      }
+      
+      /**/
+      /* LOGIN SCREEN */
+      /**/
+      .login-container {
+        position: relative;
+        display: none;
+        z-index: 10;
+      }
+      .login-container img {
+        width: 100%;
+      }
+      .login-container div {
+        position: absolute;
+      }
+      .device-login-fields {
+        opacity: 0;
+        transition: all .6s ease-in-out;
+         -webkit-transition: all .6s ease-in-out; /** Chrome & Safari **/
+         -moz-transition: all .6s ease-in-out; /** Firefox **/
+         -o-transition: all .6s ease-in-out; /** Opera **/
+      }
+      .android-container .device-login-btn {
+       /* width: 905px;
+        position: absolute;
+        left: 50%;
+        margin-left: -461px;
+        top: -79px;*/
+/*        z-index: 9;*/
+        opacity: 0;
+        transition: all .6s ease-in-out;
+         -webkit-transition: all .6s ease-in-out; /** Chrome & Safari **/
+         -moz-transition: all .6s ease-in-out; /** Firefox **/
+         -o-transition: all .6s ease-in-out; /** Opera **/
+      }
+      
+      
+      
+      .feeds-container {
+        position: relative;
+        z-index: 9;
+      }
+      .feeds-container img {
+        width: 100%;
+        transition: all .6s ease-in-out;
+         -webkit-transition: all .6s ease-in-out; /** Chrome & Safari **/
+         -moz-transition: all .6s ease-in-out; /** Firefox **/
+         -o-transition: all .6s ease-in-out; /** Opera **/
+      }
+      .feeds-screen div {
+        position: absolute;
+      }
+      .feeds-screen {
+        z-index: 1;
+        opacity: 0;
+      }
+      
+      
+      .gate-container {
+        position: relative;
+        z-index: 9;
+      }
+      .gate-container img {
+        width: 100%;
+        transition: all .6s ease-in-out;
+         -webkit-transition: all .6s ease-in-out; /** Chrome & Safari **/
+         -moz-transition: all .6s ease-in-out; /** Firefox **/
+         -o-transition: all .6s ease-in-out; /** Opera **/
+      }
+      .gate-screen {
+        z-index: 1;
+        opacity: 0;
+      }
+      .gate-screen-added-overlay {
+        z-index: 1;
+        opacity: 0;
+      }
+      
+      
+      
+      .header-container {
+        position: relative;
+        z-index: 10;
+      }
+      .header-container img {
+        width: 100%;
+        transition: all .6s ease-in-out;
+        -webkit-transition: all .6s ease-in-out; /** Chrome & Safari **/
+        -moz-transition: all .6s ease-in-out; /** Firefox **/
+        -o-transition: all .6s ease-in-out; /** Opera **/    
+      }
+      .android-header {
+        opacity: 0;
+      }
+      .header-container img.android-header-slider {
+        opacity: 0;
+        transition: all .7s ease-in-out;
+        -webkit-transition: all .7s ease-in-out; /** Chrome & Safari **/
+        -moz-transition: all .7s ease-in-out; /** Firefox **/
+        -o-transition: all .7s ease-in-out; /** Opera **/    
+      }
+      
+/*GATE HEADER AND TAGLINE*/
+      .gate-header {
+        letter-spacing: 80px;
+        font-size: 145px;
+        text-transform: uppercase;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -316px;
+        margin-top: -135px;
+        z-index: 100;
+        color: white;
+      }
+      .tagline, .testing-line {
+        font-size: 16px;
+        letter-spacing: 2px;
+        text-transform: none;
+        font-family: 'Lora', serif;
+        margin-left: 18px;
+        margin-top: 5px;
+      }
+      .testing-line {
+        margin: 20px 0 0 145px;
+        font-size: 14px;
+      }
+      
+      /*      .separator {
+        background-color: #00BBFF;
+        height: 10px;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+      }*/
+      .dl-app-container {
+        text-align: center;
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        margin-left: -90px;
+      }
+      .dl-android {
+        border: 1px solid white;
+        border-radius: 3px;
+        margin-top: 25px;
+        opacity: 0.4;
+        transition: all .8s ease-in-out;
+        -webkit-transition: all .8s ease-in-out; /** Chrome & Safari **/
+        -moz-transition: all .8s ease-in-out; /** Firefox **/
+        -o-transition: all .8s ease-in-out; /** Opera **/   
+      }
+      .dl-android:hover {
+        opacity: 1;
+      }
+      
+    </style>
+    
+    <script>
+      $(document).ready(function() {
+        var $logo = $('.device-logo'),
+            $loginContainer = $('.login-container'),
+            $loginFields = $('.device-login-fields'),
+            $loginBtn = $('.device-login-btn'),
+            $feedsScreen = $('.feeds-screen'),
+            $gateScreen = $('.gate-screen'),
+            $gateScreenOverlay = $('.gate-screen-added-overlay '),
+            $androidHeaderContainer = $('.header-container'),
+            $androidHeader = $('.android-header'),
+            $androidHeaderSlider = $('.android-header-slider'),
+            screenWidth = $(window).width();
+        doAnimation();
+        setInterval(doAnimation, 13000);
+        
+        function doAnimation() {
+        //Pause before the start of all the animations
+        //** Initial state: have the android header blue slider & gate overlay be out of the way to the left
+        //1. Transition up logo then fade it out
+        //2. Fade in login screen
+        //3. Transition out the login screen elements
+          
+        $androidHeaderSlider.css({'-webkit-transform': 'translate(-181px,98px)'});
+        $gateScreenOverlay.css({'-webkit-transform': 'translate(-140px,80px)'});
+        setTimeout(function() {
+              $logo.animate({'top': '-200px'}, 600, function() {
+                $logo.fadeOut(500, function() {
+                  //**
+                  //* Login Screen Animations
+                  //**
+                  $loginContainer.fadeIn();
+                  $loginFields.css({'opacity': '0.7'});
+                  $loginBtn.css({'opacity': '0.7'});
+                  
+                  //Fade out the login form, starting with input fields
+                  setTimeout(function() {
+                    $loginFields.css({'-webkit-transform': 'translate(300px, -200px)', 'opacity': '0'});
+                    //fade out the login btn and text after a pause
+                    setTimeout(function() {
+                      $loginBtn.css({'-webkit-transform': 'translate(300px, -200px)', 'opacity': '0'});
+                    }, 200); //ends login btn and fields fade up
+                  }, 1200); //end login screen animations
+                  
+                  
+                  
+                  //begin 2nd animation cycle
+                  setTimeout(function() {
+                    
+                    $androidHeader.css({'opacity': 0.7});
+                    //slide in the blue navigation bar from the left
+                    $androidHeaderSlider.css({'opacity': 0.7, '-webkit-transform': 'translate(0px,0px)'});
+                      /*
+                       Feeds screen begins here
+                      */
+                      $feedsScreen.css({'opacity': 0.6});
+                      setTimeout(function() {
+                        setTimeout(function() {
+                          //so why fadeout vs opacity: 0 ??
+                          //because the css property transition makes fadeOut break - on elements with
+                          //css of transition set, to achieve a fading effect, i am doing opacity: 0
+                          setTimeout(function() {
+                            $feedsScreen.css({'-webkit-transform': 'translate(142px,-90px)', 'opacity': '0'});
+                            
+                            
+                            //Begin Gate Screen animation
+                            //translate slider to the right relative to window width
+                            var transX = screenWidth * .0921875 + 'px';
+                            var transY = screenWidth * -0.049479166666666664 + 'px';
+                            $androidHeaderSlider.css({'-webkit-transform': 'translate('+transX+','+transY+')'});
+                            
+                            $gateScreen.css({'opacity': 0.7});
+                            setTimeout(function() {
+                              $gateScreenOverlay.css({'opacity': 0.9, '-webkit-transform': 'translate(0px,0px)'});
+                              //pause for a bit so overlay has time to come in before fading the header
+                              setTimeout(function() {
+                                $androidHeaderContainer.css({'opacity': 0.4});
+                              }, 300);
+                              
+                            }, 2500);
+                          }, 900);
+                        }, 900);
+                      },1000);
+                  }, 1500); //ends the second animation cycle
+                  
+                  
+                  //Reset positions after completion of the full animation cycle
+                  setTimeout(function() {
+                    var reset = function() {
+                      $gateScreen.css({'opacity': '0'});
+                      $gateScreenOverlay.css({'opacity': '0'});
+                      
+                      setTimeout(function() {
+                        $androidHeaderSlider.css({'-webkit-transform': 'translate(-181px,98px)'});
+                        $gateScreenOverlay.css({'-webkit-transform': 'translate(-140px,80px)', 'opacity': '0'});
+                        
+                        $androidHeader.css({'opacity': '0'});
+                        $loginFields.css({'-webkit-transform': 'translate(0px, 0px)'});
+                        $loginBtn.css({'-webkit-transform': 'translate(0px, 0px)'});
+                        
+                        $feedsScreen.css({'-webkit-transform': 'translate(0px,0px)'});
+                        
+                        setTimeout(function() {
+                          $logo.css({'top': 0}).fadeIn();
+                        },800);
+                        
+                      },500);
+                      
+                    }
+        
+                    reset();
+                    
+                  },9000);
+                  
+                }); //gate logo fadeOut end
+              }); //gate logo animate up end
+        
+        
+ 
+        }, 1000); //parent setTimeout
+        
+      }
+      });
+    </script>
+  </head>
 
-  div.dialog {
-    width: 95%;
-    max-width: 33em;
-    margin: 4em auto 0;
-  }
-
-  div.dialog > div {
-    border: 1px solid #CCC;
-    border-right-color: #999;
-    border-left-color: #999;
-    border-bottom-color: #BBB;
-    border-top: #B00100 solid 4px;
-    border-top-left-radius: 9px;
-    border-top-right-radius: 9px;
-    background-color: white;
-    padding: 7px 12% 0;
-    box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
-  }
-
-  h1 {
-    font-size: 100%;
-    color: #730E15;
-    line-height: 1.5em;
-  }
-
-  div.dialog > p {
-    margin: 0 0 1em;
-    padding: 1em;
-    background-color: #F7F7F7;
-    border: 1px solid #CCC;
-    border-right-color: #999;
-    border-left-color: #999;
-    border-bottom-color: #999;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    border-top-color: #DADADA;
-    color: #666;
-    box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
-  }
-  </style>
-</head>
-
-<body>
-  <!-- This file lives in public/500.html -->
-  <div class="dialog">
-    <div>
-      <h1>SOMETHING WENT ABSOLUTELY RIGHT!</h1>
+  <body>
+    <div class="separator"></div>
+    <div class="gate-header">
+      gate
+      <div class="tagline">
+        <!-- Lorem ipsum dolor sit amet, consectetur adipiscing el -->
+        Connections made real. Available now in the <a href="https://play.google.com/store/apps/details?id=com.unlock.gate">Google Play store.</a> 
+      </div>
+      <div class="testing-line">
+        Alpha testing at Texas A&M University
+      </div>
     </div>
-  </div>
-</body>
-</html>
+    
+<!-- ANDROID DEVICE -->
+    <div class="android-container">
+     
+      <!--Login Screen -->
+      <div class="login-container">
+        <img class="device-login-fields" src="/assets/android_login_fields2.png">
+        <img class="device-login-btn" src="/assets/android_login_btn.png">
+      </div>
+      
+      <!-- Header -->
+      <div class="header-container">
+        <img class="android-header" src="/assets/android_header.png">
+        <img class="android-header-slider" src="/assets/android_header_slider.png">
+      </div>
+      
+      <!--Feeds Screen -->
+      <div class="feeds-container">
+        <img class="feeds-screen" src="/assets/android_feeds_screen.png">
+      </div>
+      
+      <!--Gate Screen -->
+      <div class="gate-container">
+        <img class="gate-screen" src="/assets/gate_screen.png">
+        <img class="gate-screen-added-overlay" src="/assets/gate_screen_added_overlay.png">
+      </div>
+      
+      <img class="android-device" src="/assets/nexus_large.png">
+      <img class="android-device-whitecover" src="/assets/nexus_whitecover_large.png">
+      <img class="device-logo" src="/assets/gate_logo.png">
+    </div>
+    
+    <div class="dl-app-container">
+      <a href="https://play.google.com/store/apps/details?id=com.unlock.gate"><img class="dl-android" src="/assets/badge_android.png"></a>
+    </div>
+
+  </body>
+
+</HTML>

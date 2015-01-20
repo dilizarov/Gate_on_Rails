@@ -2,6 +2,7 @@
   <head>
     <meta charset="utf-8" />
     <title>Unlock Gate Today</title>
+    
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Roboto|Lora' rel='stylesheet' type='text/css'>
     <style>
@@ -364,9 +365,9 @@
         <img class="gate-screen-added-overlay" src="/assets/gate_screen_added_overlay.png">
       </div>
       
-      <img class="android-device" src="/assets/nexus_large.png">
-      <img class="android-device-whitecover" src="/assets/nexus_whitecover_large.png">
-      <img class="device-logo" src="/images/gate_logo.png">
+      <%= image_tag('nexus_large.png'), class: 'android-device' %>
+      <img class="android-device-whitecover" src=<%= image_path("nexus_whitecover_large.png") %> >
+      <img class="device-logo" src=<%= image_path("gate_logo.png") %>>
     </div>
     
     <div class="dl-app-container">

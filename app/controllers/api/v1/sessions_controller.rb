@@ -3,13 +3,11 @@ class Api::V1::SessionsController < ApiController
   skip_before_filter :ensure_current_user!, only: [:create]
   
   def create
-    p "Hi"
+    
     @user = User.find_by(email: params[:user][:email])
-    p "Hi"
+    
     if @user && @user.valid_password?(params[:user][:password])
-      p "Hi"
       @user.login!
-      p "Hi"
       @user.sync_device(params[:device]) if params[:device]
       
       puts @user.auth_token

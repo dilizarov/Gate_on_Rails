@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
-  get 'forgot_password' => 'users#forgot_password'
-  get 'reset_password'  => 'users#reset_password'
+  get 'forgot_password' => 'users#send_forgot_password_email'
+  get 'reset_password'  => 'users#reset_password_page'
+  get 'reset_password_action' => 'users#reset_password'
   
   namespace :api do
     namespace :v1 do

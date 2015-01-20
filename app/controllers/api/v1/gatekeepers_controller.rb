@@ -6,7 +6,7 @@ class Api::V1::GatekeepersController < ApiController
      throw ActiveRecord::RecordNotFound if @gates.length != params[:gate_ids].length || gatekeeper.nil?
      throw CanCan::AccessDenied unless gatekeeper.in_gates? @gates
      
-     gatekeeper.grant_access(@gates, current_user)
+     @gates = gatekeeper.grant_access(@gates, current_user)
      
      @gates = current_user.gates_with_users_count(includes: :creator).select { |gate| @gates.include? gate }
      

@@ -66,6 +66,8 @@ class User < ActiveRecord::Base
                     end
     
     UserGate.import(user_gates)
+    
+    return Gate.where(id: gates_to_be_added).to_a
   end
   
   def mark_uped_posts!(posts)

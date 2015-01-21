@@ -48,6 +48,8 @@ class Notifications
       post_body: post_body
     }
     
+    p "SENDING NOTIFICATION"
+    
     GCM.send_notification(destinations, data)
   end
   

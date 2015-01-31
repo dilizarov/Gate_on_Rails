@@ -199,7 +199,7 @@
     </style>
     
     <script>
-      $(document).ready(function() {
+      $(window).load(function() {
         var $logo = $('.device-logo'),
             $loginContainer = $('.login-container'),
             $loginFields = $('.device-login-fields'),
@@ -354,7 +354,7 @@ $loginBtn.css(animationPos.loginMoveOut).css(animationPos.transparent);
      
       <!--Login Screen -->
       <div class="login-container">
-        <img class="device-login-fields" src= <%= image_path("android_login_fields2.png") %>>
+        <img class="device-login-fields" src= <%= image_path("android_login_fields.png") %>>
         <img class="device-login-btn" src= <%= image_path("android_login_btn.png") %> >
       </div>
       

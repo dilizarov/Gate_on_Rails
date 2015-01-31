@@ -211,8 +211,19 @@
             $androidHeader = $('.android-header'),
             $androidHeaderSlider = $('.android-header-slider'),
             screenWidth = $(window).width();
+        
+            var animationPos = {
+              leftSlider: {'transform': 'translate(-181px,98px)', '-webkit-transform': 'translate(-181px,98px)'},
+              leftOverlay: {'transform': 'translate(-140px,80px)', '-webkit-transform': 'translate(-140px,80px)'},
+              sheer: {'opacity': '0.7'},
+              transparent: {'opacity': '0'},
+              loginMoveOut: {'transform': 'translate(300px, -200px)', '-webkit-transform': 'translate(300px, -200px)'},
+              translateReset: {'transform': 'translate(0px,0px)', '-webkit-transform': 'translate(0px,0px)'},
+              feedsMoveIn: {'transform': 'translate(142px,-90px)', '-webkit-transform': 'translate(142px,-90px)'}
+                    }
+        
         doAnimation();
-        setInterval(doAnimation, 13000);
+        setInterval(doAnimation, 14000);
         
         function doAnimation() {
         //Pause before the start of all the animations
@@ -230,15 +241,16 @@
                   //* Login Screen Animations
                   //**
                   $loginContainer.fadeIn();
-                  $loginFields.css({'opacity': '0.7'});
-                  $loginBtn.css({'opacity': '0.7'});
+                  $loginFields.css(animationPos.sheer);
+                  $loginBtn.css(animationPos.sheer);
                   
                   //Fade out the login form, starting with input fields
                   setTimeout(function() {
-                    $loginFields.css({'-webkit-transform': 'translate(300px, -200px)', 'opacity': '0'});
+                                       
+                    $loginFields.css(animationPos.loginMoveOut).css(animationPos.transparent);
                     //fade out the login btn and text after a pause
                     setTimeout(function() {
-                      $loginBtn.css({'-webkit-transform': 'translate(300px, -200px)', 'opacity': '0'});
+$loginBtn.css(animationPos.loginMoveOut).css(animationPos.transparent);
                     }, 200); //ends login btn and fields fade up
                   }, 1200); //end login screen animations
                   
@@ -247,20 +259,20 @@
                   //begin 2nd animation cycle
                   setTimeout(function() {
                     
-                    $androidHeader.css({'opacity': 0.7});
+                    $androidHeader.css(animationPos.sheer);
                     //slide in the blue navigation bar from the left
-                    $androidHeaderSlider.css({'opacity': 0.7, '-webkit-transform': 'translate(0px,0px)'});
+                    $androidHeaderSlider.css(animationPos.sheer).css(animationPos.translateReset);
                       /*
                        Feeds screen begins here
                       */
-                      $feedsScreen.css({'opacity': 0.6});
+                      $feedsScreen.css(animationPos.sheer);
                       setTimeout(function() {
                         setTimeout(function() {
                           //so why fadeout vs opacity: 0 ??
                           //because the css property transition makes fadeOut break - on elements with
                           //css of transition set, to achieve a fading effect, i am doing opacity: 0
                           setTimeout(function() {
-                            $feedsScreen.css({'-webkit-transform': 'translate(142px,-90px)', 'opacity': '0'});
+                            $feedsScreen.css(animationPos.feedsMoveIn).css(animationPos.transparent);
                             
                             
                             //Begin Gate Screen animation
@@ -269,9 +281,9 @@
                             var transY = screenWidth * -0.049479166666666664 + 'px';
                             $androidHeaderSlider.css({'-webkit-transform': 'translate('+transX+','+transY+')'});
                             
-                            $gateScreen.css({'opacity': 0.7});
+                            $gateScreen.css(animationPos.sheer);
                             setTimeout(function() {
-                              $gateScreenOverlay.css({'opacity': 0.9, '-webkit-transform': 'translate(0px,0px)'});
+                              $gateScreenOverlay.css({'opacity': 0.9}).css(animationPos.translateReset);
                               //pause for a bit so overlay has time to come in before fading the header
                               setTimeout(function() {
                                 $androidHeaderContainer.css({'opacity': 0.4});
@@ -287,18 +299,18 @@
                   //Reset positions after completion of the full animation cycle
                   setTimeout(function() {
                     var reset = function() {
-                      $gateScreen.css({'opacity': '0'});
-                      $gateScreenOverlay.css({'opacity': '0'});
+                      $gateScreen.css(animationPos.transparent);
+                      $gateScreenOverlay.css(animationPos.transparent);
                       
                       setTimeout(function() {
-                        $androidHeaderSlider.css({'-webkit-transform': 'translate(-181px,98px)'});
-                        $gateScreenOverlay.css({'-webkit-transform': 'translate(-140px,80px)', 'opacity': '0'});
+                        $androidHeaderSlider.css(animationPos.leftSlider);
+                        $gateScreenOverlay.css(animationPos.leftOverlay).css(animationPos.transparent);
                         
-                        $androidHeader.css({'opacity': '0'});
-                        $loginFields.css({'-webkit-transform': 'translate(0px, 0px)'});
-                        $loginBtn.css({'-webkit-transform': 'translate(0px, 0px)'});
+                        $androidHeader.css(animationPos.transparent);
+                        $loginFields.css(animationPos.translateReset);
+                        $loginBtn.css(animationPos.translateReset);
                         
-                        $feedsScreen.css({'-webkit-transform': 'translate(0px,0px)'});
+                        $feedsScreen.css(animationPos.translateReset);
                         
                         setTimeout(function() {
                           $logo.css({'top': 0}).fadeIn();

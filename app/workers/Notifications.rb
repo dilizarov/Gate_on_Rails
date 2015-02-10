@@ -62,7 +62,7 @@ class Notifications
     GCM.send_notification(android_destinations, android_data) unless android_destinations.empty?
     
     ios_data = {
-      alert: extended_text,
+      alert: summary,
       badge: 0,
       sound: "default",
       other: { notification_type: args[0], poster: current_user_name, post_body: post_body }
@@ -149,7 +149,7 @@ class Notifications
     }
     
     ios_data = {
-      alert: extended_text,
+      alert: summary,
       badge: 0,
       sound: "default"
     }
@@ -271,7 +271,7 @@ class Notifications
     
     ios_data[:other] = { post: post_data.values, notification_type: args[0] }
         
-    GCM.send_notification(destinations, data) unless android_destinations.empty?
+    GCM.send_notification(android_destinations, data) unless android_destinations.empty?
     
     notifications = ios_destinations.map do |ios_dest|
       APNS::Notification.new(ios_dest, ios_data)
@@ -349,7 +349,7 @@ class Notifications
   
     ios_data[:other] = { post: post_data.values, notification_type: args[0] }
     
-    GCM.send_notification(destinations, data) unless android_destinations.empty?
+    GCM.send_notification(android_destinations, data) unless android_destinations.empty?
     
     notifications = ios_destinations.map do |ios_dest|
       APNS::Notification.new(ios_dest, ios_data)

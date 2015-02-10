@@ -197,7 +197,7 @@ class Notifications
     APNS.send_notifications(ios_unliked_notifications) unless ios_unliked_destinations.empty?
     
     notifications = []
-    notifications << android_notif_liked unless android_liked_destiations.empty?
+    notifications << android_notif_liked unless android_liked_destinations.empty?
     notifications << android_notif_unliked unless android_unliked_destinations.empty?
     
     GCM.send_notifications(notifications)
@@ -230,6 +230,8 @@ class Notifications
         ios_destinations << device.token
       end
     end
+    
+    puts ios_destinations
       
     return if android_destinations.empty? && ios_destinations.empty?
     

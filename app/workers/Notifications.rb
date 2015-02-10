@@ -62,10 +62,10 @@ class Notifications
     GCM.send_notification(android_destinations, android_data) unless android_destinations.empty?
     
     ios_data = {
-      alert: { title: summary, body: post_body },
+      alert: extended_text,
       badge: 0,
       sound: "default",
-      other: { notification_type: args[0], poster: current_user_name }
+      other: { notification_type: args[0], poster: current_user_name, post_body: post_body }
     }
     
     notifications = ios_destinations.map do |ios_dest|
@@ -108,23 +108,50 @@ class Notifications
     
     # Send notifications with liked post to dest_liked.
     # Send notifications with unliked post to dest_unliked.
-    dest_liked, dest_unliked = Device.where(user_id: user_ids).partition do |device|
+    devices_liked, devices_unliked = Device.where(user_id: user_ids).partition do |device|
       all_users_who_liked_post.include? device.user_id
     end
       
-    return if dest_liked.empty? && dest_unliked.empty?
+    return if devices_liked.empty? && devices_unliked.empty?
+    
+    android_liked_destinations = []
+    ios_liked_destinations = []
+    android_unliked_destinations = []
+    ios_unliked_destinations = []
+    
+    devices_liked.each do |device|
+      if device.platform == "android"
+        android_liked_destinations << device.token
+      elsif device.platform == "ios"
+        ios_liked_destinations << device.token
+      end
+    end
+    
+    devices_unliked.each do |device|
+      if device.platform == "android"
+        android_unliked_destinations << device.token
+      elsif device.platform == "ios"
+        ios_unliked_destinations << device.token
+      end
+    end
     
     title = "Gate"
     summary = "#{current_user_name} commented on a post"
     extended_text = "#{current_user_name} commented: \n\n #{comment_body}"
      
-    data = {
+    android_data = {
       notification_type: args[0],
       title: title,
       summary: summary,
       extended_text: extended_text,
       commenter: current_user_name,
       comment_body: comment_body,
+    }
+    
+    ios_data = {
+      alert: extended_text,
+      badge: 0,
+      sound: "default"
     }
 
     post_data = {
@@ -139,20 +166,39 @@ class Notifications
       created_at: post.created_at
     }
     
-    data[:post] = post_data.values
-    notif_liked = GCM::Notification.new(dest_liked.map(&:token), data)
+    android_data[:post] = post_data.values
+    ios_data[:other] = { post: post_data.values, notification_type: args[0] }
     
-    # You have to dup data, because GCM::Notification keeps a reference
+    android_notif_liked = GCM::Notification.new(android_liked_destinations, data) unless android_liked_destinations.empty?
+    
+    ios_liked_notifications = ios_liked_destinations.map do |ios_dest|
+      APNS::Notification.new(ios_dest, ios_data)
+    end
+    
+    APNS.send_notifications(ios_liked_notifications) unless ios_liked_destinations.empty?
+    
+    # You have to dup data, because GCM::Notification, and APNS::Notification keep a reference
     # and if we change data[:post] here, the above changes meaning all this
     # work is for naught.
     post_data[:liked] = false
-    data_unliked = data.dup
-    data_unliked[:post] = post_data.values
-    notif_unliked = GCM::Notification.new(dest_unliked.map(&:token), data_unliked)
+    
+    android_data_unliked = android_data.dup
+    android_data_unliked[:post] = post_data.values
+    
+    ios_data_unliked = ios_data.dup
+    ios_data_unliked[:other] = { post: post_data.values, notification_type: args[0] }
+    
+    android_notif_unliked = GCM::Notification.new(android_unliked_destinations, data_unliked) unless android_unliked_destinations.empty?
+    
+    ios_unliked_notifications = ios_unliked_destinations.map do |ios_dest|
+      APNS::Notification.new(ios_dest, ios_data)
+    end
+    
+    APNS.send_notifications(ios_unliked_notifications) unless ios_unliked_destinations.empty?
     
     notifications = []
-    notifications << notif_liked unless dest_liked.empty?
-    notifications << notif_unliked unless dest_unliked.empty?
+    notifications << android_notif_liked unless android_liked_destiations.empty?
+    notifications << android_notif_unliked unless android_unliked_destinations.empty?
     
     GCM.send_notifications(notifications)
   end
@@ -172,20 +218,37 @@ class Notifications
     # This is for cases when someone leaves a Gate.
     return if UserGate.find_by(user_id: post_user_id, gate_id: post.gate.id).nil?
     
-    destinations = Device.where(user_id: post_user_id).map(&:token)
+    devices = Device.where(user_id: post_user_id)
     
-    return if destinations.empty?
+    android_destinations = []
+    ios_destinations = []
+    
+    devices.each do |device|
+      if device.platform == "android"
+        android_destinations << device.token
+      elsif device.platform == "ios"
+        ios_destinations << device.token
+      end
+    end
+      
+    return if android_destinations.empty? && ios_destinations.empty?
     
     title = "Gate"
     summary = "#{current_user_name} likes your post"
     extended_text = "#{current_user_name} likes your post: \n\n #{post.body}"
         
-    data = {
+    android_data = {
       notification_type: args[0],
       title: title,
       summary: summary,
       extended_text: extended_text,
       liker: current_user_name
+    }
+    
+    ios_data = {
+      alert: summary
+      badge: 0
+      sound: "default"
     }
     
     liked_post = ActsAsVotable::Vote.where(
@@ -204,9 +267,17 @@ class Notifications
       created_at: post.created_at
     }
     
-    data[:post] = post_data.values
+    android_data[:post] = post_data.values
+    
+    ios_data[:other] = { post: post_data.values, notification_type: args[0] }
         
-    GCM.send_notification(destinations, data)
+    GCM.send_notification(destinations, data) unless android_destinations.empty?
+    
+    notifications = ios_destinations.map do |ios_dest|
+      APNS::Notification.new(ios_dest, ios_data)
+    end
+    
+    APNS.send_notifications(notifications) unless ios_destinations.empty?
   end
   
   def send_comment_liked_notification(args)
@@ -225,20 +296,37 @@ class Notifications
     # This is for cases when someone leaves a Gate.
     return if UserGate.find_by(user_id: comment_user_id, gate_id: post.gate.id).nil?
     
-    destinations = Device.where(user_id: comment_user_id).map(&:token)
+    devices = Device.where(user_id: comment_user_id)
     
-    return if destinations.empty?
+    android_destinations = []
+    ios_destinations = []
+    
+    devices.each do |device|
+      if device.platform == "android"
+        android_destinations << device.token
+      elsif device.platform == "ios"
+        ios_destinations << device.token
+      end
+    end
+    
+    return if android_destinations.empty? && ios_destinations.empty?
     
     title = "Gate"
     summary = "#{current_user_name} likes your comment"
     extended_text = "#{current_user_name} likes your comment: \n\n #{comment_body}"
         
-    data = {
+    android_data = {
       notification_type: args[0],
       title: title,
       summary: summary,
       extended_text: extended_text,
       liker: current_user_name
+    }
+    
+    ios_data = {
+      alert: summary,
+      badge: 0,
+      sound: "default"
     }
     
     liked_post = ActsAsVotable::Vote.where(
@@ -257,8 +345,16 @@ class Notifications
       created_at: post.created_at
     }
     
-    data[:post] = post_data.values
-        
-    GCM.send_notification(destinations, data)
+    android_data[:post] = post_data.values
+  
+    ios_data[:other] = { post: post_data.values, notification_type: args[0] }
+    
+    GCM.send_notification(destinations, data) unless android_destinations.empty?
+    
+    notifications = ios_destinations.map do |ios_dest|
+      APNS::Notification.new(ios_dest, ios_data)
+    end
+    
+    APNS.send_notifications(notifications) unless ios_destinations.empty?
   end
 end

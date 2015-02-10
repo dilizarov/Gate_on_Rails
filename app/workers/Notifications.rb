@@ -167,7 +167,7 @@ class Notifications
     }
     
     android_data[:post] = post_data.values
-    ios_data[:other] = { post: post_data.values, notification_type: args[0] }
+    #ios_data[:other] = { post: post_data.values, notification_type: args[0] }
     
     android_notif_liked = GCM::Notification.new(android_liked_destinations, android_data) unless android_liked_destinations.empty?
     
@@ -186,7 +186,7 @@ class Notifications
     android_data_unliked[:post] = post_data.values
     
     ios_data_unliked = ios_data.dup
-    ios_data_unliked[:other] = { post: post_data.values, notification_type: args[0] }
+    #ios_data_unliked[:other] = { post: post_data.values, notification_type: args[0] }
     
     android_notif_unliked = GCM::Notification.new(android_unliked_destinations, android_data_unliked) unless android_unliked_destinations.empty?
     
@@ -347,7 +347,7 @@ class Notifications
     
     android_data[:post] = post_data.values
   
-    ios_data[:other] = { post: post_data.values, notification_type: args[0] }
+    #ios_data[:other] = { post: post_data.values, notification_type: args[0] }
     
     GCM.send_notification(android_destinations, android_data) unless android_destinations.empty?
     

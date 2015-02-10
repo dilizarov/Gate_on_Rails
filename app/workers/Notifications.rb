@@ -59,7 +59,7 @@ class Notifications
       post_body: post_body
     }
     
-    GCM.send_notification(destinations, android_data) unless android_destinations.empty?
+    GCM.send_notification(android_destinations, android_data) unless android_destinations.empty?
     
     ios_data = {
       alert: { title: summary, body: post_body },
@@ -72,7 +72,7 @@ class Notifications
       APNS::Notification.new(ios_dest, ios_data)
     end
     
-    APNS.send_notifications(notifications)
+    APNS.send_notifications(notifications) unless ios_destinations.empty?
     
   end
   

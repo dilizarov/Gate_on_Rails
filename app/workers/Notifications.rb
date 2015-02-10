@@ -230,8 +230,6 @@ class Notifications
         ios_destinations << device.token
       end
     end
-    
-    puts ios_destinations
       
     return if android_destinations.empty? && ios_destinations.empty?
     
@@ -271,7 +269,7 @@ class Notifications
     
     android_data[:post] = post_data.values
     
-    ios_data[:other] = { post: post_data.values, notification_type: args[0] }
+    #ios_data[:other] = { post: post_data.values, notification_type: args[0] }
         
     GCM.send_notification(android_destinations, android_data) unless android_destinations.empty?
     

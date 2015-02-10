@@ -31,15 +31,26 @@ class Notifications
     gate = Gate.find(post_gate_id)
     return unless gate
     
-    destinations = gate.devices.where('users.id != ?', current_user_id).map(&:token)
+    devices = gate.devices.where('users.id != ?', current_user_id)
 
-    return if destinations.empty?
+    android_destinations = []
+    ios_destinations = []
+    
+    devices.each do |device|
+      if device.platform == "android"
+        android_destinations << device.token
+      elsif device.platform == "ios"
+        ios_destinations << device.token
+      end
+    end
+      
+    return if android_destinations.empty? && ios_destinations.empty?
     
     title = "Gate"
     summary = "#{current_user_name} posted in #{gate.name}"
     extended_text = "#{current_user_name} posted: \n\n #{post_body}"
     
-    data = {
+    android_data = {
       notification_type: args[0],
       title: title,
       summary: summary,
@@ -48,7 +59,21 @@ class Notifications
       post_body: post_body
     }
     
-    GCM.send_notification(destinations, data)
+    GCM.send_notification(destinations, android_data) unless android_destinations.empty?
+    
+    ios_data = {
+      alert: { title: summary, body: post_body },
+      badge: 0,
+      sound: "default",
+      other: { notification_type: args[0], poster: current_user_name }
+    }
+    
+    notifications = ios_destinations.map do |ios_dest|
+      APNS::Notification.new(ios_dest, ios_data)
+    end
+    
+    APNS.send_notifications(notifications)
+    
   end
   
   # A lot of work is done here to figure out who liked the post and who didn't

@@ -169,7 +169,7 @@ class Notifications
     android_data[:post] = post_data.values
     ios_data[:other] = { post: post_data.values, notification_type: args[0] }
     
-    android_notif_liked = GCM::Notification.new(android_liked_destinations, data) unless android_liked_destinations.empty?
+    android_notif_liked = GCM::Notification.new(android_liked_destinations, android_data) unless android_liked_destinations.empty?
     
     ios_liked_notifications = ios_liked_destinations.map do |ios_dest|
       APNS::Notification.new(ios_dest, ios_data)
@@ -188,7 +188,7 @@ class Notifications
     ios_data_unliked = ios_data.dup
     ios_data_unliked[:other] = { post: post_data.values, notification_type: args[0] }
     
-    android_notif_unliked = GCM::Notification.new(android_unliked_destinations, data_unliked) unless android_unliked_destinations.empty?
+    android_notif_unliked = GCM::Notification.new(android_unliked_destinations, android_data_unliked) unless android_unliked_destinations.empty?
     
     ios_unliked_notifications = ios_unliked_destinations.map do |ios_dest|
       APNS::Notification.new(ios_dest, ios_data)
@@ -271,7 +271,7 @@ class Notifications
     
     ios_data[:other] = { post: post_data.values, notification_type: args[0] }
         
-    GCM.send_notification(android_destinations, data) unless android_destinations.empty?
+    GCM.send_notification(android_destinations, android_data) unless android_destinations.empty?
     
     notifications = ios_destinations.map do |ios_dest|
       APNS::Notification.new(ios_dest, ios_data)
@@ -349,7 +349,7 @@ class Notifications
   
     ios_data[:other] = { post: post_data.values, notification_type: args[0] }
     
-    GCM.send_notification(android_destinations, data) unless android_destinations.empty?
+    GCM.send_notification(android_destinations, android_data) unless android_destinations.empty?
     
     notifications = ios_destinations.map do |ios_dest|
       APNS::Notification.new(ios_dest, ios_data)

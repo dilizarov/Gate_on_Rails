@@ -1,4 +1,4 @@
-APNS.host = 'gateway.sandbox.push.apple.com'
+APNS.host = 'gateway.push.apple.com'
 APNS.port = 2195
-APNS.pem = "#{Rails.root}/config/GateiOSDevCertificate.pem"
+APNS.pem = "#{Rails.root}/config/GateProductionCertificate.pem"
 APNS.pass = ''

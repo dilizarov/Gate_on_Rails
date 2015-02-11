@@ -17,7 +17,7 @@ class ApiController < ApplicationController
   before_action :ensure_current_user!
   
   def authenticate_api_key!
-    if params[:api_key] != ENV["ANDROID_API_KEY"]
+    if params[:api_key] != ENV["ANDROID_API_KEY"] || params[:api_key] != ENV["IOS_API_KEY"]
       render status: :unauthorized,
              json: { errors: [ "Gatekeeper, that is not a valid API key" ] }
     end

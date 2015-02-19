@@ -324,7 +324,7 @@ class Notifications
     ios_data = {
       alert: summary,
       badge: 0,
-      sound: "default"
+      sound: "default",
       other: { notification_type: args[0] }
     }
     

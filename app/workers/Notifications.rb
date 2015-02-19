@@ -65,7 +65,7 @@ class Notifications
       alert: summary,
       badge: 0,
       sound: "default",
-      other: { notification_type: args[0], poster: current_user_name, post_body: post_body }
+      other: { notification_type: args[0], poster: current_user_name }
     }
     
     notifications = ios_destinations.map do |ios_dest|
@@ -151,7 +151,8 @@ class Notifications
     ios_data = {
       alert: summary,
       badge: 0,
-      sound: "default"
+      sound: "default",
+      other: { notification_type: args[0] }
     }
 
     post_data = {
@@ -246,7 +247,8 @@ class Notifications
     ios_data = {
       alert: summary,
       badge: 0,
-      sound: "default"
+      sound: "default",
+      other: { notification_type: args[0] }
     }
     
     liked_post = ActsAsVotable::Vote.where(
@@ -323,6 +325,7 @@ class Notifications
       alert: summary,
       badge: 0,
       sound: "default"
+      other: { notification_type: args[0] }
     }
     
     liked_post = ActsAsVotable::Vote.where(

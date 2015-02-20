@@ -11,8 +11,16 @@ class Api::V1::CommentsController < ApiController
     
     current_user.mark_uped_comments!(@comments)
     
-    render status: 200,
-           json: @comments
+    if params[:include_post]
+      current_user.mark_uped_posts!([@post])
+      
+      render status: 200,
+             json: @comments,
+             meta: { post: @post }
+    else
+      render status: 200,
+             json: @comments
+    end
   end
   
   def create

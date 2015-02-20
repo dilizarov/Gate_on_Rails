@@ -152,7 +152,7 @@ class Notifications
       alert: summary,
       badge: 0,
       sound: "default",
-      other: { notification_type: args[0] }
+      other: { notification_type: args[0], post_id: post.external_id }
     }
 
     post_data = {
@@ -248,7 +248,7 @@ class Notifications
       alert: summary,
       badge: 0,
       sound: "default",
-      other: { notification_type: args[0] }
+      other: { notification_type: args[0], post_id: post.external_id }
     }
     
     liked_post = ActsAsVotable::Vote.where(
@@ -325,7 +325,7 @@ class Notifications
       alert: summary,
       badge: 0,
       sound: "default",
-      other: { notification_type: args[0] }
+      other: { notification_type: args[0], post_id: post.external_id }
     }
     
     liked_post = ActsAsVotable::Vote.where(

@@ -16,7 +16,7 @@ class Api::V1::CommentsController < ApiController
       
       render status: 200,
              json: @comments,
-             meta: JSON.parse(PostSerializer.new(@post).to_json, root: false),
+             meta: PostSerializer.new(@post, root: false).as_json,
              meta_key: "post"
     else
       render status: 200,

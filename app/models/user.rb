@@ -13,8 +13,6 @@ class User < ActiveRecord::Base
   
   validates :name, presence: true
   
-  after_create :unlock_alpha_testers_gate
-  
   has_many :gates,
            -> { order 'LOWER(gates.name)' },
            through: :user_gates
@@ -33,14 +31,6 @@ class User < ActiveRecord::Base
   has_many :comments
   has_many :devices
   has_many :authentication_tokens
-  
-  def unlock_alpha_testers_gate
-    # David is user 1. Alpha Testers is gate 1.
-    
-    UserGate.create(user_id: self.id,
-                    gate_id: 1,
-                    gatekeeper_id: 1)
-  end
   
   def gates_with_users_count(options = {})
     gates = self.gates

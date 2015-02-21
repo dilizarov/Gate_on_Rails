@@ -14,6 +14,7 @@ class Api::V1::CommentsController < ApiController
     if params[:include_post]
       current_user.mark_uped_posts!([@post])
       
+      # No really simple way to have just one post for the entire set of comments. So, I put it in the meta.
       render status: 200,
              json: @comments,
              meta: { post: PostSerializer.new(@post, root: false).as_json }

@@ -25,9 +25,7 @@ class Api::V1::KeysController < ApiController
     @keys = current_user.keys.active
     
     render status: 200,
-           json: @keys,
-           meta: { success: true,
-                   info: "Keys" }
+           json: @keys
   end
   
   # ActionController::Base has a method named process.

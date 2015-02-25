@@ -2,7 +2,7 @@ class Api::V1::KeysController < ApiController
   before_action :load_already_existing_key, only: [:destroy]
   
   load_resource except: [:index, :prokess]
-  authorize_resource except: [:prokess]
+  authorize_resource except: [:index, :prokess]
   
   def create
     if @key.save

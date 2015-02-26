@@ -1,9 +1,7 @@
 class Key < ActiveRecord::Base
   
-  EXPIRATION_MARK = 3.days.ago
-  
-  scope :expired, -> { where('updated_at < ?', EXPIRATION_MARK) }
-  scope :active,  -> { where('updated_at >= ?', EXPIRATION_MARK) }
+  scope :expired, -> { where('updated_at < ?', 3.days.ago) }
+  scope :active,  -> { where('updated_at >= ?', 3.days.ago) }
   
   # This is not confusing at all. :)
   attr_encrypted :key,    key: ENV['KEY_KEY']
@@ -19,7 +17,7 @@ class Key < ActiveRecord::Base
              foreign_key: :gatekeeper_id          
   
   def expired?
-    self.updated_at < EXPIRATION_MARK
+    self.updated_at < 3.days.ago
   end
   
   def active?

@@ -56,7 +56,9 @@ class Notifications
       summary: summary,
       extended_text: extended_text,
       poster: current_user_name,
-      post_body: post_body
+      post_body: post_body,
+      gate_name: gate.name,
+      gate_id: gate.external_id
     }
     
     GCM.send_notification(android_destinations, android_data) unless android_destinations.empty?
@@ -65,7 +67,7 @@ class Notifications
       alert: summary,
       badge: 0,
       sound: "default",
-      other: { notification_type: args[0], poster: current_user_name }
+      other: { notification_type: args[0], poster: current_user_name, gate_name: gate.name, gate_id: gate.external_id }
     }
     
     notifications = ios_destinations.map do |ios_dest|
@@ -145,7 +147,7 @@ class Notifications
       summary: summary,
       extended_text: extended_text,
       commenter: current_user_name,
-      comment_body: comment_body,
+      comment_body: comment_body
     }
     
     ios_data = {

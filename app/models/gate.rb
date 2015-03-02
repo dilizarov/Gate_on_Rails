@@ -6,6 +6,9 @@ class Gate < ActiveRecord::Base
   validates :name,       presence: true
   validates :creator_id, presence: true
   
+  # In place to prevent race conditions
+  validates :external_id, uniqueness: true
+  
   after_create :add_creator_to_gate!
   
   has_many :users, 
@@ -22,6 +25,27 @@ class Gate < ActiveRecord::Base
   belongs_to :creator, 
              class_name: "User",
              foreign_key: :creator_id
+  
+  def self.process_coords_for_gates!(lat, long)
+    client = GooglePlaces::Client.new(ENV['GOOGLE_API_KEY'])
+    
+    spots = client.spots(lat, long, radius: 25, exclude: ['accounting', 'atm', 'cemetery', 'finance', 'funeral_home', 'taxi_stand'])
+  
+    gates = []
+  
+    spots.select! { |spot| spot.types.include?("establishment") }
+    
+    spots.each do |spot|
+      begin
+        #creator_id required. Though, I suppose we could get rid of that at some point. Returns nil upon no creator, so shouldn't be an issue.
+        gates << Gate.find_or_create_by(name: spot.name, external_id: spot.place_id, creator_id: 0, generated: true)
+      rescue ActiveRecord::RecordNotUnique
+        retry
+      end
+    end
+    
+    gates
+  end
   
   
   # Part of what *should be* a working REDIS feed implementation 
@@ -63,7 +87,9 @@ class Gate < ActiveRecord::Base
   private
   
   def add_creator_to_gate!
-    UserGate.create(user_id: self.creator_id, gate_id: self.id)
+    if !(self.creator_id.nil? || self.creator_id == 0)
+      UserGate.create(user_id: self.creator_id, gate_id: self.id)
+    end
   end
 
 end

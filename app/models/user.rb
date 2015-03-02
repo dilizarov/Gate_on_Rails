@@ -54,6 +54,31 @@ class User < ActiveRecord::Base
     gates
   end
   
+  # gates param assumed to include only generated gates
+  def process_generated_gates!(gates)
+    users_current_generated_gates = self.gates.where(generated: true)
+    
+    gates_to_leave = []
+    users_current_generated_gates.each do |generated_gate|
+      unless gates.include?(generated_gate)
+        gates_to_leave << generated_gate
+      end
+    end
+        
+    UserGate.delete_all(user_id: self.id, gate_id: gates_to_leave.map(&:id))
+    
+    gates.each do |gate|
+      begin
+        UserGate.find_or_create_by(user_id: self.id, gate_id: gate.id)
+      rescue ActiveRecord::RecordNotUnique
+        retry
+      end
+    end
+    
+    # Returns new generated gates
+    return gates - users_current_generated_gates.to_a
+  end
+  
   def grant_access(gates, user)
     
     # Filter out gates that other_user is already part of.

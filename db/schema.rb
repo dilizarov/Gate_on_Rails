@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150115122524) do
+ActiveRecord::Schema.define(version: 20150302031223) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,11 +50,12 @@ ActiveRecord::Schema.define(version: 20150115122524) do
   add_index "devices", ["token"], name: "index_devices_on_token", using: :btree
 
   create_table "gates", force: true do |t|
-    t.string   "name",        null: false
-    t.integer  "creator_id",  null: false
-    t.uuid     "external_id", null: false
+    t.string   "name",                        null: false
+    t.integer  "creator_id",                  null: false
+    t.text     "external_id",                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "generated",   default: false
   end
 
   add_index "gates", ["creator_id"], name: "index_gates_on_creator_id", using: :btree
@@ -98,6 +99,7 @@ ActiveRecord::Schema.define(version: 20150115122524) do
 
   add_index "user_gates", ["gate_id"], name: "index_user_gates_on_gate_id", using: :btree
   add_index "user_gates", ["gatekeeper_id"], name: "index_user_gates_on_gatekeeper_id", using: :btree
+  add_index "user_gates", ["user_id", "gate_id"], name: "index_user_gates_on_user_id_and_gate_id", unique: true, using: :btree
   add_index "user_gates", ["user_id"], name: "index_user_gates_on_user_id", using: :btree
 
   create_table "users", force: true do |t|

@@ -36,6 +36,10 @@ Rails.application.routes.draw do
       resources :gatekeepers, only: [] do
         post 'grant_access' => 'gatekeepers#grant_access'
       end
+      
+      resources :generated_gates, only: [] do
+        post 'manage' => 'generated_gates#manage', on: :collection
+      end
     end
   end
   

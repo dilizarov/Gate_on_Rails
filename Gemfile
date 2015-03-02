@@ -39,6 +39,9 @@ gem 'faker', '1.4.3'
 # Will be used for upvote/like/^ functionality
 gem 'acts_as_votable', '~> 0.10.0'
 
+# Ruby Wrapper around the Google Places API
+gem 'google_places', '0.30.0'
+
 # Will be used for rake-task scheduling when we shift off Heroku to our own
 # servers. For now, we use Heroku's add-on.
 # gem 'whenever', require: false

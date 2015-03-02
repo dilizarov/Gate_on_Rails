@@ -1,4 +1,7 @@
 class UserGate < ActiveRecord::Base
+  
+  validates :user_id, uniqueness: { scope: :gate_id }
+  
   belongs_to :gate,    inverse_of: :user_gates
   belongs_to :user,    inverse_of: :user_gates
   

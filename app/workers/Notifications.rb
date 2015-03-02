@@ -18,6 +18,8 @@ class Notifications
       send_post_liked_notification(args)
     when COMMENT_LIKED_NOTIFICATION
       send_comment_liked_notification(args)
+    when GENERATED_GATES_NOTIFICATION
+      send_unlocked_gates_notification(args)
     end
   end
   
@@ -354,6 +356,67 @@ class Notifications
       APNS::Notification.new(ios_dest, ios_data)
     end
     
+    APNS.send_notifications(notifications) unless ios_destinations.empty?
+  end
+  
+  def send_unlocked_gates_notification(args)
+    
+    current_user_id   = args[1]
+    current_user_name = args[2]
+    new_gate_names    = args[3]
+  
+    return if new_gate_names.empty?
+    
+    devices = User.find(current_user_id).devices
+
+    android_destinations = []
+    ios_destinations = []
+  
+    devices.each do |device|
+      if device.platform == "android"
+        android_destinations << device.token
+      elsif device.platform == "ios"
+        ios_destinations << device.token
+      end
+    end
+    
+    return if android_destinations.empty? && ios_destinations.empty?
+  
+    gates_string = ""
+    
+    if new_gate_names.length == 1
+      gates_string += new_gate_names[0]
+    elsif new_gate_names.length == 2
+      gates_string += "#{new_gate_names[0]} and #{new_gate_names[1]}"
+    elsif new_gate_names.length == 3
+      gates_string += "#{new_gate_names[0]}, #{new_gate_names[1]}, and #{new_gate_names[2]}"
+    else
+      # string concat variables lol
+      gates_string += "#{new_gate_names[0]}, #{new_gate_names[1]}, #{new_gate_names[2]}, and #{num = new_gate_names.length - 3} more Gate#{num > 1 ? "s" : "" }"
+    end
+      
+    title = "Gate"
+    summary = "You unlocked #{gates_string}"
+  
+    android_data = {
+      notification_type: args[0],
+      title: title,
+      summary: summary,
+    }
+  
+    GCM.send_notification(android_destinations, android_data) unless android_destinations.empty?
+  
+    ios_data = {
+      alert: summary,
+      badge: 0,
+      sound: "default",
+      other: { notification_type: args[0] }
+    }
+  
+    notifications = ios_destinations.map do |ios_dest|
+      APNS::Notification.new(ios_dest, ios_data)
+    end
+  
     APNS.send_notifications(notifications) unless ios_destinations.empty?
   end
 end

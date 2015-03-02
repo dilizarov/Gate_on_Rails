@@ -1,5 +1,5 @@
 class GateSerializer < ActiveModel::Serializer
-  attributes :name, :external_id
+  attributes :name, :external_id, :generated
   
   def attributes
     data = super

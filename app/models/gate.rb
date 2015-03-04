@@ -1,7 +1,7 @@
 class Gate < ActiveRecord::Base
   include Externalable
   
-  attr_accessor :users_count
+  attr_accessor :users_count, :session
   
   validates :name,       presence: true
   validates :creator_id, presence: true
@@ -11,13 +11,15 @@ class Gate < ActiveRecord::Base
   
   after_create :add_creator_to_gate!
   
-  has_many :users, 
+  has_many :users,
            through: :user_gates
   
   has_many :user_gates, 
            class_name: "UserGate"
   
-  has_many :posts, -> { order(created_at: :desc) }
+  has_many :posts,
+           -> { order(created_at: :desc) },
+           dependent: :destroy
   
   has_many :devices,
            through: :users
@@ -47,6 +49,19 @@ class Gate < ActiveRecord::Base
     gates
   end
   
+  def self.check_sessions!(gates, auth_token)
+    auth_token = AuthenticationToken === auth_token ? auth_token : AuthenticationToken.where(token: auth_token).first
+    
+    user_gates = UserGate.where(user_id: auth_token.user_id, gate_id: gates.map(&:id), auth_token_id: auth_token.id)
+    
+    gates.each do |gate|
+      next unless gate.generated
+            
+      gate.session = true unless user_gates.select { |user_gate| user_gate.gate_id == gate.id }.empty?
+    end
+    
+    gates
+  end
   
   # Part of what *should be* a working REDIS feed implementation 
   # with comments and posts. Due to the $$ required for REDIS,

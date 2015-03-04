@@ -4,6 +4,7 @@ class GateSerializer < ActiveModel::Serializer
   def attributes
     data = super
     data[:users_count] = object.users_count unless object.users_count.nil?
+    data[:session] = object.session.nil? ? false : object.session
     data
   end
   

@@ -5,6 +5,8 @@ class Api::V1::GatesController < ApiController
   def index
     @gates = current_user.gates_with_users_count(includes: :creator)
     
+    Gate.check_sessions!(@gates, params[:auth_token])
+    
     render status: 200,
            json: @gates,
            meta: { success: true,

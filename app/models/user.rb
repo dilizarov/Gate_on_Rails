@@ -55,7 +55,7 @@ class User < ActiveRecord::Base
   end
   
   # gates param assumed to include only generated gates
-  def process_generated_gates!(gates)
+  def process_generated_gates!(gates, auth_token)
     users_current_generated_gates = self.gates.where(generated: true)
     
     gates_to_leave = []
@@ -65,11 +65,11 @@ class User < ActiveRecord::Base
       end
     end
         
-    UserGate.delete_all(user_id: self.id, gate_id: gates_to_leave.map(&:id))
+    UserGate.delete_all(user_id: self.id, gate_id: gates_to_leave.map(&:id), auth_token_id: auth_token.id)
     
     gates.each do |gate|
       begin
-        UserGate.find_or_create_by(user_id: self.id, gate_id: gate.id)
+        UserGate.find_or_create_by(user_id: self.id, gate_id: gate.id, auth_token_id: auth_token.id)
       rescue ActiveRecord::RecordNotUnique
         retry
       end
@@ -77,6 +77,10 @@ class User < ActiveRecord::Base
     
     # Returns new generated gates
     return gates - users_current_generated_gates.to_a
+  end
+  
+  def leave_generated_gates(auth_token)
+    UserGate.delete_all(user_id: self.id, auth_token_id: auth_token.id)
   end
   
   def grant_access(gates, user)
@@ -139,7 +143,12 @@ class User < ActiveRecord::Base
   end
   
   def logout!(auth_token)
-    AuthenticationToken.where(token: auth_token).first.destroy
+    auth_token = AuthenticationToken.where(token: auth_token).first
+    
+    # UserGates that have an auth_id attribute were generated via location by that device.
+    self.user_gates.where(auth_token_id: auth_token.id).destroy_all
+    
+    auth_token.destroy
   end
   
   def sync_device(params)

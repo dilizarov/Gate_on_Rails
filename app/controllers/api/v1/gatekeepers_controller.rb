@@ -7,8 +7,8 @@ class Api::V1::GatekeepersController < ApiController
      throw CanCan::AccessDenied unless gatekeeper.in_gates? @gates
      
      @gates = gatekeeper.grant_access(@gates, current_user)
-     
      @gates = current_user.gates_with_users_count(includes: :creator).select { |gate| @gates.include? gate }
+     Gate.check_sessions!(@gates, params[:auth_token])
      
      render status: 200,
             json: @gates,

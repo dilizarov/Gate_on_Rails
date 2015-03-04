@@ -32,6 +32,7 @@ class Notifications
     
     gate = Gate.find(post_gate_id)
     return unless gate
+    return if gate.generated
     
     devices = gate.devices.where('users.id != ?', current_user_id)
 
@@ -408,8 +409,7 @@ class Notifications
   
     ios_data = {
       alert: summary,
-      badge: 0,
-      sound: "default",
+      badge: new_gate_names.count,
       other: { notification_type: args[0] }
     }
   

@@ -38,7 +38,8 @@ Rails.application.routes.draw do
       end
       
       resources :generated_gates, only: [] do
-        post 'manage' => 'generated_gates#manage', on: :collection
+        post 'process' => 'generated_gates#prokess', on: :collection
+        delete 'leave' => 'generated_gates#leave', on: :collection
       end
     end
   end

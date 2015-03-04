@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150302031223) do
+ActiveRecord::Schema.define(version: 20150303221032) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,8 +95,10 @@ ActiveRecord::Schema.define(version: 20150302031223) do
     t.boolean  "anonymous",     default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "auth_token_id"
   end
 
+  add_index "user_gates", ["auth_token_id"], name: "index_user_gates_on_auth_token_id", using: :btree
   add_index "user_gates", ["gate_id"], name: "index_user_gates_on_gate_id", using: :btree
   add_index "user_gates", ["gatekeeper_id"], name: "index_user_gates_on_gatekeeper_id", using: :btree
   add_index "user_gates", ["user_id", "gate_id"], name: "index_user_gates_on_user_id_and_gate_id", unique: true, using: :btree

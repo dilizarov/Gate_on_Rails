@@ -19,7 +19,7 @@ class Api::V1::GeneratedGatesController < ApiController
     render status: 200,
            json: @gates,
            each_serializer: GateSerializer,
-           root: "Gates",
+           root: "gates",
            meta: { success: true,
                    info: "Gates",
                    total: @gates.length }

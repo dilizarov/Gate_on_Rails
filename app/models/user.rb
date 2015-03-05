@@ -56,6 +56,12 @@ class User < ActiveRecord::Base
   
   # gates param assumed to include only generated gates
   def process_generated_gates!(gates, auth_token)
+    # If the user permanently unlocked the Gate, it shouldn't be processed.
+    hash_for_user_gates = UserGate.where(user_id: self.id, gate_id: gates.map(&:id), auth_token_id: nil).index_by(&:gate_id)
+    gates.reject! do |gate|
+      !!hash_for_user_gates[gate.id]
+    end
+    
     users_current_generated_gates = self.gates.where(generated: true)
     
     gates_to_leave = []
@@ -65,6 +71,9 @@ class User < ActiveRecord::Base
       end
     end
         
+    # The fact that only delete those associated with this session assure us
+    # that we won't accidentally delete one that was unlocked permanently.
+    
     UserGate.delete_all(user_id: self.id, gate_id: gates_to_leave.map(&:id), auth_token_id: auth_token.id)
     
     gates.each do |gate|
@@ -77,6 +86,17 @@ class User < ActiveRecord::Base
     
     # Returns new generated gates
     return gates - users_current_generated_gates.to_a
+  end
+  
+  def unlock_generated_gate(gate)
+    relationship = UserGate.find_by(user_id: self.id, gate_id: gate.id)
+    
+    relationship.auth_token_id = nil
+    relationship.save
+    
+    gate.unlocked_perm = true
+    
+    return gate
   end
   
   def leave_generated_gates(auth_token)

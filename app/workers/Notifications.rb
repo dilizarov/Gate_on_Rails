@@ -32,9 +32,19 @@ class Notifications
     
     gate = Gate.find(post_gate_id)
     return unless gate
-    return if gate.generated
     
     devices = gate.devices.where('users.id != ?', current_user_id)
+
+    # If the gate is generated, only send a notification to those who have
+    # permanently unlocked the Gate
+    if gate.generated
+      # key is user_id of Device
+      hash_of_user_gates = UserGate.where(user_id: devices.map(&:user_id), gate_id: gate.id, auth_token_id: nil).index_by(&:user_id)
+      
+      devices.select! do |device|
+        !!hash_of_user_gates[device.user_id]
+      end
+    end
 
     android_destinations = []
     ios_destinations = []

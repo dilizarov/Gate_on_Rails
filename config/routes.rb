@@ -40,6 +40,7 @@ Rails.application.routes.draw do
       resources :generated_gates, only: [] do
         post 'process' => 'generated_gates#prokess', on: :collection
         delete 'leave' => 'generated_gates#leave', on: :collection
+        put 'unlock' => 'generated_gates#unlock', on: :member
       end
     end
   end

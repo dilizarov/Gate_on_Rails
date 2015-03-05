@@ -1,14 +1,11 @@
 class Gate < ActiveRecord::Base
   include Externalable
   
-  attr_accessor :users_count, :session
+  attr_accessor :users_count, :session, :unlocked_perm
   
   validates :name,       presence: true
   validates :creator_id, presence: true
-  
-  # In place to prevent race conditions
-  validates :external_id, uniqueness: true
-  
+    
   after_create :add_creator_to_gate!
   
   has_many :users,
@@ -39,7 +36,7 @@ class Gate < ActiveRecord::Base
     
     spots.each do |spot|
       begin
-        #creator_id required. Though, I suppose we could get rid of that at some point. Returns nil upon no creator, so shouldn't be an issue.
+        #creator_id required. Though, I suppose we could get rid of that at some point. Association return nil upon no creator, so shouldn't be an issue.
         gates << Gate.find_or_create_by(name: spot.name, external_id: spot.place_id, creator_id: 0, generated: true)
       rescue ActiveRecord::RecordNotUnique
         retry
@@ -52,15 +49,27 @@ class Gate < ActiveRecord::Base
   def self.check_sessions!(gates, auth_token)
     auth_token = AuthenticationToken === auth_token ? auth_token : AuthenticationToken.where(token: auth_token).first
     
-    user_gates = UserGate.where(user_id: auth_token.user_id, gate_id: gates.map(&:id), auth_token_id: auth_token.id)
+    hash_to_user_gates = UserGate.where(user_id: auth_token.user_id, gate_id: gates.map(&:id), auth_token_id: auth_token.id).index_by(&:gate_id)
     
     gates.each do |gate|
       next unless gate.generated
-            
-      gate.session = true unless user_gates.select { |user_gate| user_gate.gate_id == gate.id }.empty?
+      
+      gate.session = true if hash_to_user_gates[gate.id]
     end
     
     gates
+  end
+  
+  def self.check_unlocked_status!(gates, user)
+    hash_to_user_gates = UserGate.where(user_id: user.id, gate_id: gates.map(&:id)).index_by(&:gate_id)
+    
+    gates.each do |gate|
+      next unless gate.generated
+      
+      unless hash_to_user_gates[gate.id].nil?
+        gate.unlocked_perm = hash_to_user_gates[gate.id].auth_token_id.nil?
+      end
+    end
   end
   
   # Part of what *should be* a working REDIS feed implementation 

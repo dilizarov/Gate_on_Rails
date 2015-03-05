@@ -1,5 +1,7 @@
 class Api::V1::GeneratedGatesController < ApiController
 
+  load_and_authorize_resource :gate, parent: false, find_by: :external_id, only: [:unlock]
+
   def prokess
     @gates = Gate.process_coords_for_gates!(params[:lat], params[:long])
     
@@ -15,6 +17,7 @@ class Api::V1::GeneratedGatesController < ApiController
     @gates = current_user.gates_with_users_count(includes: :creator)
    
     Gate.check_sessions!(@gates, auth_token)
+    Gate.check_unlocked_status!(@gates, current_user)
    
     render status: 200,
            json: @gates,
@@ -23,6 +26,14 @@ class Api::V1::GeneratedGatesController < ApiController
            meta: { success: true,
                    info: "Gates",
                    total: @gates.length }
+  end
+  
+  def unlock
+    current_user.unlock_generated_gate(@gate)
+    
+    render status: 200,
+           json: @gate,
+           serializer: GateSerializer
   end
   
   def leave

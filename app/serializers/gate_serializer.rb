@@ -5,6 +5,7 @@ class GateSerializer < ActiveModel::Serializer
     data = super
     data[:users_count] = object.users_count unless object.users_count.nil?
     data[:session] = object.session.nil? ? false : object.session
+    data[:unlocked_perm] = object.unlocked_perm.nil? ? true : object.unlocked_perm
     data
   end
   

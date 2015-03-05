@@ -9,6 +9,7 @@ class Api::V1::GatekeepersController < ApiController
      @gates = gatekeeper.grant_access(@gates, current_user)
      @gates = current_user.gates_with_users_count(includes: :creator).select { |gate| @gates.include? gate }
      Gate.check_sessions!(@gates, params[:auth_token])
+     Gate.check_unlocked_status!(@gates, current_user)
      
      render status: 200,
             json: @gates,

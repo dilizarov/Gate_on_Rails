@@ -2,7 +2,7 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    can [:read, :leave], Gate do |gate|
+    can [:read, :leave, :unlock], Gate do |gate|
       user.in_gate? gate
     end
       

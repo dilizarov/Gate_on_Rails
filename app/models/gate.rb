@@ -31,7 +31,7 @@ class Gate < ActiveRecord::Base
   def self.process_coords_for_gates!(lat, long)
     client = GooglePlaces::Client.new(ENV['GOOGLE_API_KEY'])
     
-    spots = client.spots(lat, long, radius: 25, exclude: ['accounting', 'atm', 'cemetery', 'finance', 'funeral_home', 'taxi_stand'])
+    spots = client.spots(lat, long, radius: 50, exclude: ['accounting', 'atm', 'cemetery', 'finance', 'funeral_home', 'taxi_stand'])
   
     gates = []
   

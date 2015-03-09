@@ -407,7 +407,7 @@ class Notifications
     end
       
     title = "Gate"
-    summary = "You unlocked Gates"
+    summary = "You unlocked #{new_gate_names.length == 1 ? "a Gate" : "Gates"}"
     extended_text = "You unlocked #{gates_string}"
   
     android_data = {

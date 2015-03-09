@@ -61,7 +61,7 @@ class Notifications
     
     title = "Gate"
     summary = "#{current_user_name} posted in #{gate.name}"
-    extended_text = "#{current_user_name} posted: \n\n #{post_body}"
+    extended_text = "#{current_user_name} posted in #{gate.name}: \n\n #{post_body}"
     
     android_data = {
       notification_type: args[0],
@@ -407,18 +407,20 @@ class Notifications
     end
       
     title = "Gate"
-    summary = "You unlocked #{gates_string}"
+    summary = "You unlocked Gates"
+    extended_text = "You unlocked #{gates_string}"
   
     android_data = {
       notification_type: args[0],
       title: title,
       summary: summary,
+      extended_text: extended_text
     }
   
     GCM.send_notification(android_destinations, android_data) unless android_destinations.empty?
   
     ios_data = {
-      alert: summary,
+      alert: extended_text,
       badge: new_gate_names.count,
       other: { notification_type: args[0] }
     }

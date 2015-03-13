@@ -5,6 +5,10 @@ CarrierWave.configure do |config|
     aws_secret_access_key: ENV['AWS_SECRET']
   }
   
-  config.fog_directory = "unlockgatedev"
+  if Rails.env.production?
+    config.fog_directory = "unlockgateproduction"
+  else
+    config.fog_directory = "unlockgatedev"
+  end
   config.fog_public = false
 end

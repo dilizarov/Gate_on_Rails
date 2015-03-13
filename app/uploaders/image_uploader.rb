@@ -29,6 +29,8 @@ class ImageUploader < CarrierWave::Uploader::Base
   end
 
   def unique_id
+    return unless model.image_id.nil?
+    
     loop do
       uuid = SecureRandom.uuid
       break model.image_id = uuid unless model.class.unscoped.where("#{mounted_as.to_s}_id = ?", uuid).first

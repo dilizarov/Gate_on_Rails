@@ -30,11 +30,11 @@ class Api::V1::PostsController < ApiController
   def create
     if @post.save
       
-      Notifications.perform_async(POST_CREATED_NOTIFICATION,
-                                  current_user.id,
-                                  current_user.name,
-                                  @post.gate_id,
-                                  @post.body)
+      # Notifications.perform_async(POST_CREATED_NOTIFICATION,
+#                                   current_user.id,
+#                                   current_user.name,
+#                                   @post.gate_id,
+#                                   @post.body)
                     
       render status: 200,
              json: @post
@@ -93,7 +93,7 @@ class Api::V1::PostsController < ApiController
   def post_params
     params.
       require(:post).
-      permit(:body).
+      permit(:body, :image).
       merge(user_id: current_user.id)
   end
 

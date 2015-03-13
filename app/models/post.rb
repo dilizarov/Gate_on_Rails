@@ -1,6 +1,8 @@
 class Post < ActiveRecord::Base
   include Externalable
   
+  mount_uploader :image, ImageUploader
+  
   acts_as_votable
   
   attr_accessor :uped

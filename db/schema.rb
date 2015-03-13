@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150303221032) do
+ActiveRecord::Schema.define(version: 20150313101055) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -81,11 +81,14 @@ ActiveRecord::Schema.define(version: 20150303221032) do
     t.datetime "updated_at"
     t.integer  "comments_count",  default: 0
     t.integer  "cached_votes_up", default: 0
+    t.string   "image"
+    t.uuid     "image_id"
   end
 
   add_index "posts", ["cached_votes_up"], name: "index_posts_on_cached_votes_up", using: :btree
   add_index "posts", ["external_id"], name: "index_posts_on_external_id", unique: true, using: :btree
   add_index "posts", ["gate_id"], name: "index_posts_on_gate_id", using: :btree
+  add_index "posts", ["image_id"], name: "index_posts_on_image_id", unique: true, using: :btree
   add_index "posts", ["user_id"], name: "index_posts_on_user_id", using: :btree
 
   create_table "user_gates", force: true do |t|

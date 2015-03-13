@@ -6,6 +6,8 @@ class ImageUploader < CarrierWave::Uploader::Base
   storage :fog
 
   def filename
+    return if file.nil?
+    
     name = original_filename.present? ? without_extension(original_filename) : "image"
     "#{name}-#{unique_id}.#{file.extension}"
   end

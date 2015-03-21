@@ -4,11 +4,9 @@ class KeyRefresher
   include Sidekiq::Worker
   include Sidetiq::Schedulable
   
-  recurrence do 
-    daily.hour_of_day(0).minute_of_hour(1)
-  end
+  recurrence { daily }
   
-  def perform
+  def perform(*args)
     Key.all.map(&:touch)
   end
 end

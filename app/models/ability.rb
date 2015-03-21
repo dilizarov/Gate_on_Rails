@@ -3,11 +3,11 @@ class Ability
 
   def initialize(user)
     can [:read, :leave, :unlock], Gate do |gate|
-      user.in_gate? gate
+      user.in_gate? gate || gate.id == 297 #Around You Gate
     end
       
     can [:read, :create, :up], Post do |post|
-      user.in_gate? post.gate_id
+      user.in_gate? post.gate_id || post.gate_id == 297 #Around You Gate
     end
     
     can :destroy, Post do |post|

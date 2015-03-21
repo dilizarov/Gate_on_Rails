@@ -27,6 +27,9 @@ gem 'pushmeup'
 # Background worker to do tasks off a REDIS queue 
 gem 'sidekiq'
 
+# recurring sidekiq jobs
+gem 'sidetiq'
+
 # Pagination Solution
 gem 'kaminari', '0.16.1'
 

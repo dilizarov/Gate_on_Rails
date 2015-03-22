@@ -38,7 +38,7 @@ class Notifications
       current_user = User.find(current_user_id)
       current_user.auth_token = AuthenticationToken.find(auth_token_id)
       
-      bounds = User.find(current_user_id).around_you_bounds
+      bounds = current_user.around_you_bounds
       
       tokens = AuthenticationToken.where("latitude >= ? AND latitude <= ?", bounds[:min_lat], bounds[:max_lat]).
                           where("longitude >= ? AND longitude <= ?", bounds[:min_long], bounds[:max_long]).

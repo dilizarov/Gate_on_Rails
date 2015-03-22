@@ -29,11 +29,15 @@ class Notifications
     current_user_name = args[2]
     post_gate_id      = args[3]
     post_body         = args[4]
+    auth_token_id     = args[5]
     
     gate = Gate.find(post_gate_id)
     return unless gate
     
     if gate.id == AROUND_YOU_GATE_ID
+      current_user = User.find(current_user_id)
+      current_user.auth_token = AuthenticationToken.find(auth_token_id)
+      
       bounds = User.find(current_user_id).around_you_bounds
       
       tokens = AuthenticationToken.where("latitude >= ? AND latitude <= ?", bounds[:min_lat], bounds[:max_lat]).

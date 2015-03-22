@@ -65,7 +65,8 @@ class Api::V1::PostsController < ApiController
                                   current_user.id,
                                   current_user.name,
                                   @post.gate_id,
-                                  @post.body)
+                                  @post.body,
+                                  current_user.auth_token.id)
                     
       render status: 200,
              json: @post

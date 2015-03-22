@@ -42,7 +42,7 @@ class Notifications
       
       tokens = AuthenticationToken.where("latitude >= ? AND latitude <= ?", bounds[:min_lat], bounds[:max_lat]).
                           where("longitude >= ? AND longitude <= ?", bounds[:min_long], bounds[:max_long]).
-                          where.not(user_id: self.id).includes(:device)
+                          where.not(user_id: current_user.id).includes(:device)
       
       devices = tokens.map(&:device).uniq
     else

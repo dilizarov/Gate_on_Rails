@@ -17,7 +17,7 @@ class Ability
     can [:create, :up], Comment do |comment|
       gate_id = comment.post.gate_id
       
-      user.in_gate? gate_id || gate_id == AROUND_YOU_GATE_ID 
+      user.in_gate?(gate_id) || gate_id == AROUND_YOU_GATE_ID 
     end
     
     can :destroy, Comment do |comment|

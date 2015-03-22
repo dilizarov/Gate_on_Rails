@@ -209,6 +209,7 @@ class User < ActiveRecord::Base
     device = Device.find_or_initialize_by(token: params[:token])
     device.platform = params[:platform]
     device.user_id = self.id
+    device.auth_id = self.auth_token.id
     device.save
   end
   

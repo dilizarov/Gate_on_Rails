@@ -3,11 +3,11 @@ class Ability
 
   def initialize(user)
     can [:read, :leave, :unlock], Gate do |gate|
-      user.in_gate?(gate) || gate.id == AROUND_YOU_GATE_ID #Around You Gate
+      user.in_gate?(gate) || gate.id == AROUND_YOU_GATE_ID
     end
       
     can [:read, :create, :up], Post do |post|
-      user.in_gate?(post.gate_id) || post.gate_id == AROUND_YOU_GATE_ID #Around You Gate
+      user.in_gate?(post.gate_id) || post.gate_id == AROUND_YOU_GATE_ID
     end
     
     can :destroy, Post do |post|
@@ -15,7 +15,9 @@ class Ability
     end
     
     can [:create, :up], Comment do |comment|
-      user.in_gate? comment.post.gate_id
+      gate_id = comment.post.gate_id
+      
+      user.in_gate? gate_id || gate_id == AROUND_YOU_GATE_ID 
     end
     
     can :destroy, Comment do |comment|

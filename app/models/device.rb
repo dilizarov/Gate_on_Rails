@@ -1,5 +1,7 @@
 class Device < ActiveRecord::Base
   belongs_to :user
+  belongs_to :authentication_token,
+             foreign_key: :auth_id
   
   validates :token, presence: true
   # Don't yet have an ios app. :'(

@@ -33,19 +33,29 @@ class Notifications
     gate = Gate.find(post_gate_id)
     return unless gate
     
-    devices = gate.devices.where('users.id != ?', current_user_id)
-
-    # If the gate is generated, only send a notification to those who have
-    # permanently unlocked the Gate
-    if gate.generated
-      # key is user_id of Device
-      hash_of_user_gates = UserGate.where(user_id: devices.map(&:user_id), gate_id: gate.id, auth_token_id: nil).index_by(&:user_id)
+    if gate.id == AROUND_YOU_GATE_ID
+      bounds = User.find(current_user_id).around_you_bounds
       
-      devices.select! do |device|
-        !!hash_of_user_gates[device.user_id]
+      tokens = AuthenticationToken.where("latitude >= ? AND latitude <= ?", bounds[:min_lat], bounds[:max_lat]).
+                          where("longitude >= ? AND longitude <= ?", bounds[:min_long], bounds[:max_long]).
+                          where.not(user_id: self.id).includes(:device)
+      
+      devices = tokens.map(&:device).uniq
+    else
+      devices = gate.devices.where('users.id != ?', current_user_id)
+
+      # If the gate is generated, only send a notification to those who have
+      # permanently unlocked the Gate
+      if gate.generated
+        # key is user_id of Device
+        hash_of_user_gates = UserGate.where(user_id: devices.map(&:user_id), gate_id: gate.id, auth_token_id: nil).index_by(&:user_id)
+      
+        devices.select! do |device|
+          !!hash_of_user_gates[device.user_id]
+        end
       end
     end
-
+    
     android_destinations = []
     ios_destinations = []
     

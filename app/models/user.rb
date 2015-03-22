@@ -54,9 +54,7 @@ class User < ActiveRecord::Base
     gates
   end
   
-  # Nearby user count based on an approximate bounding box
-  # with radius 200 meters.
-  def nearby_users_count
+  def around_you_bounds
     radius = 200
     
     lat = self.auth_token.latitude
@@ -69,13 +67,21 @@ class User < ActiveRecord::Base
     delta_lat = radius/111100.0
     delta_long = radius/meters_in_long_direction
     
-    min_lat = lat - delta_lat
-    max_lat = lat + delta_lat
-    min_long = long - delta_long
-    max_long = long + delta_long
+    result = {}
     
-    AuthenticationToken.where("latitude >= ? AND latitude <= ?", min_lat, max_lat).
-                        where("longitude >= ? AND longitude <= ?", min_long, max_long).
+    result[:min_lat] = lat - delta_lat
+    result[:max_lat] = lat + delta_lat
+    result[:min_long] = long - delta_long
+    result[:max_long] = long + delta_long
+    
+    result
+  end
+  
+  def nearby_users_count
+    bounds = around_you_bounds
+    
+    AuthenticationToken.where("latitude >= ? AND latitude <= ?", bounds[:min_lat], bounds[:max_lat]).
+                        where("longitude >= ? AND longitude <= ?", bounds[:min_long], bounds[:max_long]).
                         where.not(user_id: self.id).
                         distinct.count(:user_id)
   end

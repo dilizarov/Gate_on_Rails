@@ -7,13 +7,32 @@ class Api::V1::PostsController < ApiController
   authorize_resource except: [:index, :aggregate]
 
   def index
-    @posts = @gate.posts.
+    if @gate.id == AROUND_YOU_GATE_ID
+      bounds = current_user.around_you_bounds
+      
+      unless bounds.nil?
+        @posts = @gate.posts.includes(:user)
+                .where("latitude >= ? AND latitude <= ?", bounds[:min_lat], bounds[:max_lat]).
+                .where("longitude >= ? AND longitude <= ?", bounds[:min_long], bounds[:max_long]).
+                created_before(time_buffer).
+                page(page).
+                per(15).
+                to_a
+      else
+        render status: :unprocessable_entity,
+               json: { errors: ["Session lacks location data from which to base Around You posts"], location_error: true }
+        
+        return
+      end
+    else
+      @posts = @gate.posts.
                       includes(:user).
                       created_before(time_buffer).
                       page(page).
                       per(15).
                       to_a
-                      
+    end
+                    
     current_user.mark_uped_posts!(@posts)                                  
                             
     render status: 200,
@@ -28,6 +47,18 @@ class Api::V1::PostsController < ApiController
   end
 
   def create
+    if @post.gate_id == AROUND_YOU_GATE_ID
+      @post.latitude = current_user.auth_token.latitude
+      @post.longitude = current_user.auth_token.longitude
+    
+      if @post.latitude.nil? || @post.longitude.nil?
+        render status: :unprocessable_entity,
+               json: { errors: ["No location to attach to Post"], location_error: true }
+               
+        return
+      end
+    end
+    
     if @post.save
       
       Notifications.perform_async(POST_CREATED_NOTIFICATION,
@@ -40,7 +71,7 @@ class Api::V1::PostsController < ApiController
              json: @post
     else
       render status: :unprocessable_entity,
-             json: { errors: @post.errors.full_messages }
+             json: { errors: @post.errors.full_messages, location_error: false }
     end
   end
   

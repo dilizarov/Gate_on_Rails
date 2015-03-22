@@ -11,16 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150313101055) do
+ActiveRecord::Schema.define(version: 20150321222614) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "authentication_tokens", force: true do |t|
-    t.string  "token",   null: false
-    t.integer "user_id", null: false
+    t.string  "token",                             null: false
+    t.integer "user_id",                           null: false
+    t.decimal "latitude",  precision: 9, scale: 6
+    t.decimal "longitude", precision: 9, scale: 6
   end
 
+  add_index "authentication_tokens", ["latitude"], name: "index_authentication_tokens_on_latitude", using: :btree
+  add_index "authentication_tokens", ["longitude"], name: "index_authentication_tokens_on_longitude", using: :btree
   add_index "authentication_tokens", ["token"], name: "index_authentication_tokens_on_token", using: :btree
   add_index "authentication_tokens", ["user_id"], name: "index_authentication_tokens_on_user_id", using: :btree
 

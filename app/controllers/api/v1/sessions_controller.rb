@@ -9,9 +9,7 @@ class Api::V1::SessionsController < ApiController
     if @user && @user.valid_password?(params[:user][:password])
       @user.login!
       @user.sync_device(params[:device]) if params[:device]
-      
-      puts @user.auth_token
-    
+          
       render status: 200,
              json: @user,
              serializer: CurrentUserSerializer,
@@ -22,6 +20,13 @@ class Api::V1::SessionsController < ApiController
       render status: :unprocessable_entity,
              json: { errors: ["Incorrect email or password"] }
     end
+  end
+  
+  def update_location
+    current_user.auth_token.update_attributes(latitude: params[:lat], longitude: params[:long])    
+      
+    render status: :ok,
+           json: { meta: { nearby_users_count: current_user.nearby_users_count } }
   end
   
   def destroy

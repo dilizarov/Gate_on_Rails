@@ -54,6 +54,32 @@ class User < ActiveRecord::Base
     gates
   end
   
+  # Nearby user count based on an approximate bounding box
+  # with radius 200 meters.
+  def nearby_users_count
+    radius = 200
+    
+    lat = self.auth_token.latitude
+    long = self.auth_token.longitude
+    
+    return nil unless lat && long
+    
+    meters_in_long_direction = 111320.0 * Math.cos( lat / 180.0 * Math::PI)
+    
+    delta_lat = radius/111100.0
+    delta_long = radius/meters_in_long_direction
+    
+    min_lat = lat - delta_lat
+    max_lat = lat + delta_lat
+    min_long = long - delta_long
+    max_long = long + delta_long
+    
+    AuthenticationToken.where("latitude >= ? AND latitude <= ?", min_lat, max_lat).
+                        where("longitude >= ? AND longitude <= ?", min_long, max_long).
+                        where.not(user_id: self.id).
+                        distinct.count(:user_id)
+  end
+  
   # gates param assumed to include only generated gates
   def process_generated_gates!(gates, auth_token)
     # If the user permanently unlocked the Gate, it shouldn't be processed.
@@ -159,7 +185,7 @@ class User < ActiveRecord::Base
   end
   
   def login!
-    self.auth_token = AuthenticationToken.create(user_id: self.id).token
+    self.auth_token = AuthenticationToken.create(user_id: self.id)
   end
   
   def logout!(auth_token)

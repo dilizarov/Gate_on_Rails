@@ -3,7 +3,7 @@ class CurrentUserSerializer < ActiveModel::Serializer
   
   def attributes
     data = super
-    data[:auth_token] = object.auth_token unless object.auth_token.nil?
+    data[:auth_token] = object.auth_token.token unless object.auth_token.nil?
     data
   end 
 end

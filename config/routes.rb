@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       
       post 'sessions'             => 'sessions#create',      as: 'login'
       post 'sessions/logout'      => 'sessions#destroy',     as: 'logout'
+      put  'sessions/update_location' => 'sessions#update_location'
       
       resources :gates, only: [:create, :index, :show] do
         member do

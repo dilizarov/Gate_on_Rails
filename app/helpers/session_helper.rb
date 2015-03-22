@@ -8,10 +8,11 @@ module SessionHelper
 
     return nil unless potential_user
     
-    auth_tokens = potential_user.authentication_tokens.map(&:token)
+    auth_tokens = potential_user.authentication_tokens
     
     auth_tokens.each do |auth_token|
-      if Devise.secure_compare(auth_token, params[:auth_token])
+      if Devise.secure_compare(auth_token.token, params[:auth_token])
+        potential_user.auth_token = auth_token
         return @current_user = potential_user
       end
     end

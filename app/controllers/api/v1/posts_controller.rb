@@ -11,9 +11,9 @@ class Api::V1::PostsController < ApiController
       bounds = current_user.around_you_bounds
       
       unless bounds.nil?
-        @posts = @gate.posts.includes(:user)
-                .where("latitude >= ? AND latitude <= ?", bounds[:min_lat], bounds[:max_lat]).
-                .where("longitude >= ? AND longitude <= ?", bounds[:min_long], bounds[:max_long]).
+        @posts = @gate.posts.includes(:user).
+                where("latitude >= ? AND latitude <= ?", bounds[:min_lat], bounds[:max_lat]).
+                where("longitude >= ? AND longitude <= ?", bounds[:min_long], bounds[:max_long]).
                 created_before(time_buffer).
                 page(page).
                 per(15).
